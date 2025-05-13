@@ -651,6 +651,12 @@ KALEIDOSCOPE_INIT_PLUGINS(
  * Kaleidoscope and any plugins.
  */
 void setup() {
+  Qukeys.setHoldTimeout(250);
+  Qukeys.setMaxIntervalForTapRepeat(0);
+  Qukeys.setOverlapThreshold(90);
+  Qukeys.setMinimumHoldTime(150);
+  Qukeys.setMinimumPriorInterval(80);
+
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
 
