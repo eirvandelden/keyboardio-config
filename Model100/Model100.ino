@@ -40,7 +40,7 @@
 #include "Kaleidoscope-LEDEffect-Breathe.h"
 
 // Support for an LED mode that makes a red pixel chase a blue pixel across the keyboard
-#include "Kaleidoscope-LEDEffect-Chase.h"
+// #include "Kaleidoscope-LEDEffect-Chase.h"
 
 // Support for LED modes that pulse the keyboard's LED in a rainbow pattern
 #include "Kaleidoscope-LEDEffect-Rainbow.h"
@@ -49,7 +49,7 @@
 #include "Kaleidoscope-LED-Stalker.h"
 
 // Support for an LED mode that prints the keys you press in letters 4px high
-#include "Kaleidoscope-LED-AlphaSquare.h"
+//#include "Kaleidoscope-LED-AlphaSquare.h"
 
 // Support for shared palettes for other plugins, like Colormap below
 #include "Kaleidoscope-LED-Palette-Theme.h"
@@ -400,13 +400,13 @@ const macro_t *macroAction(uint8_t macro_id, KeyEvent &event) {
 // Keyboardio Model 100.
 
 
-static kaleidoscope::plugin::LEDSolidColor solidRed(160, 0, 0);
-static kaleidoscope::plugin::LEDSolidColor solidOrange(140, 70, 0);
-static kaleidoscope::plugin::LEDSolidColor solidYellow(130, 100, 0);
-static kaleidoscope::plugin::LEDSolidColor solidGreen(0, 160, 0);
-static kaleidoscope::plugin::LEDSolidColor solidBlue(0, 70, 130);
-static kaleidoscope::plugin::LEDSolidColor solidIndigo(0, 0, 170);
-static kaleidoscope::plugin::LEDSolidColor solidViolet(130, 0, 120);
+// static kaleidoscope::plugin::LEDSolidColor solidRed(160, 0, 0);
+// static kaleidoscope::plugin::LEDSolidColor solidOrange(140, 70, 0);
+// static kaleidoscope::plugin::LEDSolidColor solidYellow(130, 100, 0);
+// static kaleidoscope::plugin::LEDSolidColor solidGreen(0, 160, 0);
+// static kaleidoscope::plugin::LEDSolidColor solidBlue(0, 70, 130);
+// static kaleidoscope::plugin::LEDSolidColor solidIndigo(0, 0, 170);
+// static kaleidoscope::plugin::LEDSolidColor solidViolet(130, 0, 120);
 
 /** toggleLedsOnSuspendResume toggles the LEDs off when the host goes to sleep,
  * and turns them back on when it wakes up.
@@ -591,23 +591,23 @@ KALEIDOSCOPE_INIT_PLUGINS(
 
   // The chase effect follows the adventure of a blue pixel which chases a red pixel across
   // your keyboard. Spoiler: the blue pixel never catches the red pixel
-  LEDChaseEffect,
+  //LEDChaseEffect,
 
   // These static effects turn your keyboard's LEDs a variety of colors
-  solidRed,
-  solidOrange,
-  solidYellow,
-  solidGreen,
-  solidBlue,
-  solidIndigo,
-  solidViolet,
+  // solidRed,
+  // solidOrange,
+  // solidYellow,
+  // solidGreen,
+  // solidBlue,
+  // solidIndigo,
+  // solidViolet,
 
   // The breathe effect slowly pulses all of the LEDs on your keyboard
   LEDBreatheEffect,
 
   // The AlphaSquare effect prints each character you type, using your
   // keyboard's LEDs as a display
-  AlphaSquareEffect,
+  //AlphaSquareEffect,
 
   // The stalker effect lights up the keys you've pressed recently
   StalkerEffect,
@@ -653,7 +653,7 @@ KALEIDOSCOPE_INIT_PLUGINS(
 void setup() {
   Qukeys.setHoldTimeout(250);
   Qukeys.setMaxIntervalForTapRepeat(0);
-  Qukeys.setOverlapThreshold(90);
+  Qukeys.setOverlapThreshold(93);
   Qukeys.setMinimumHoldTime(150);
   Qukeys.setMinimumPriorInterval(80);
 
@@ -703,7 +703,7 @@ void setup() {
 
   // Set the rainbow effects to be reasonably bright, but low enough
   // to mitigate audible noise in some environments.
-  LEDRainbowEffect.brightness(170);
+  // LEDRainbowEffect.brightness(170);
   LEDRainbowWaveEffect.brightness(160);
 
   // Set the action key the test mode should listen for to Left Fn
