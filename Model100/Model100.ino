@@ -651,11 +651,16 @@ KALEIDOSCOPE_INIT_PLUGINS(
  * Kaleidoscope and any plugins.
  */
 void setup() {
-  Qukeys.setHoldTimeout(250);
+  // Max time Qukeys waits to decide if a key is held (modifier) or tapped
+  Qukeys.setHoldTimeout(250);           // Faster decision (down from 250)
+  // Time a key must be held before Qukeys will treat it as a hold even if released early
+  Qukeys.setMinimumHoldTime(200);
+  // Time within which a second key must be pressed to consider first key as hold
+  Qukeys.setOverlapThreshold(150);      // Slightly longer overlap allowed
+  // Time that must pass before another tap to not interfere
+  Qukeys.setMinimumPriorInterval(50);   // More tolerant of fast typing (was 80)
+  // For tap-dance like behavior
   Qukeys.setMaxIntervalForTapRepeat(0);
-  Qukeys.setOverlapThreshold(93);
-  Qukeys.setMinimumHoldTime(150);
-  Qukeys.setMinimumPriorInterval(80);
 
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
@@ -699,7 +704,7 @@ void setup() {
   BootGreetingEffect.hue = 85;
 
   // We configure the AlphaSquare effect to use RED letters
-  AlphaSquare.color = CRGB(255, 0, 0);
+  // AlphaSquare.color = CRGB(255, 0, 0);
 
   // Set the rainbow effects to be reasonably bright, but low enough
   // to mitigate audible noise in some environments.
@@ -712,7 +717,7 @@ void setup() {
   // The LED Stalker mode has a few effects. The one we like is called
   // 'BlazingTrail'. For details on other options, see
   // https://github.com/keyboardio/Kaleidoscope/blob/master/plugins/Kaleidoscope-LED-Stalker/README.md
-  StalkerEffect.variant = STALKER(BlazingTrail);
+  StalkerEffect.variant = STALKER(Rainbow);
 
   // To make the keymap editable without flashing new firmware, we store
   // additional layers in EEPROM. For now, we reserve space for eight layers. If
