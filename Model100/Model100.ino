@@ -651,16 +651,30 @@ KALEIDOSCOPE_INIT_PLUGINS(
  * Kaleidoscope and any plugins.
  */
 void setup() {
-  // Max time Qukeys waits to decide if a key is held (modifier) or tapped
-  Qukeys.setHoldTimeout(250);           // Faster decision (down from 250)
-  // Time a key must be held before Qukeys will treat it as a hold even if released early
-  Qukeys.setMinimumHoldTime(200);
-  // Time within which a second key must be pressed to consider first key as hold
-  Qukeys.setOverlapThreshold(150);      // Slightly longer overlap allowed
-  // Time that must pass before another tap to not interfere
-  Qukeys.setMinimumPriorInterval(50);   // More tolerant of fast typing (was 80)
-  // For tap-dance like behavior
-  Qukeys.setMaxIntervalForTapRepeat(0);
+  // Time (ms) a qukey held alone will trigger its alternate (modifier) state.
+  // Useful for shift+click. You don't need to wait this long when pressing
+  // other keys.
+  Qukeys.setHoldTimeout(200); // default 250
+
+  // Minimum time (ms) a qukey must be held to be eligible for alternate state.
+  // If released sooner, always produces primary key. Prevents accidental
+  // modifiers.
+  Qukeys.setMinimumHoldTime(80); // default 50
+
+  // How much overlap (%) required between qukey and next key to activate
+  // modifier. When typing fast, you might release the qukey before fully
+  // pressing the next key. 80% = keys must overlap significantly. Lower values
+  // = more forgiving of rolling off keys.
+  Qukeys.setOverlapThreshold(80); // default 80
+
+  // Minimum time (ms) between a prior key press and qukey press for qukey
+  // to be eligible for alternate state. Prevents modifiers during fast typing.
+  Qukeys.setMinimumPriorInterval(85); // default 75
+
+  // Time (ms) after tapping a qukey where pressing it again and holding will
+  // repeat the primary key instead of activating alternate state (e.g.,
+  // aaaaa…). Set to 0 to disable.
+  Qukeys.setMaxIntervalForTapRepeat(0); // disabled (default 200)
 
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
