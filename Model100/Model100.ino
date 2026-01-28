@@ -654,7 +654,7 @@ void setup() {
   // Time (ms) a qukey held alone will trigger its alternate (modifier) state.
   // Useful for shift+click. You don't need to wait this long when pressing
   // other keys.
-  Qukeys.setHoldTimeout(200); // default 250
+  Qukeys.setHoldTimeout(260); // default 250
 
   // Minimum time (ms) a qukey must be held to be eligible for alternate state.
   // If released sooner, always produces primary key. Prevents accidental
@@ -665,16 +665,16 @@ void setup() {
   // modifier. When typing fast, you might release the qukey before fully
   // pressing the next key. 80% = keys must overlap significantly. Lower values
   // = more forgiving of rolling off keys.
-  Qukeys.setOverlapThreshold(80); // default 80
+  Qukeys.setOverlapThreshold(80); // default 80, increased for fast typing
 
   // Minimum time (ms) between a prior key press and qukey press for qukey
   // to be eligible for alternate state. Prevents modifiers during fast typing.
-  Qukeys.setMinimumPriorInterval(85); // default 75
+  Qukeys.setMinimumPriorInterval(75); // default 75, decreased for fast typing
 
   // Time (ms) after tapping a qukey where pressing it again and holding will
   // repeat the primary key instead of activating alternate state (e.g.,
   // aaaaa…). Set to 0 to disable.
-  Qukeys.setMaxIntervalForTapRepeat(0); // disabled (default 200)
+  // Qukeys.setMaxIntervalForTapRepeat(0); // disabled (default 200)
 
   // Increase the Model 100 keyscanner interval. Higher values mean the half
   // scanners wait longer between samples, increasing effective debouncing and
