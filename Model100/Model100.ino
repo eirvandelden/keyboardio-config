@@ -2,6 +2,19 @@
 // Copyright 2016-2022 Keyboardio, inc. <jesse@keyboard.io>
 // See "LICENSE" for license details
 
+// Forward declaration of the hardware keyscanner API, using the same namespace
+// as the Model 100 hardware package so the linker finds the real
+// implementation.
+namespace kaleidoscope {
+namespace device {
+namespace keyboardio {
+// NOTE: Don't redeclare `kaleidoscope::device::keyboardio::Model100KeyScanner`
+// here. The board support package already defines it, and redeclaring causes a
+// redefinition error.
+} // namespace keyboardio
+} // namespace device
+} // namespace kaleidoscope
+
 /**
  * These #include directives pull in the Kaleidoscope firmware core,
  * as well as the Kaleidoscope plugins we use in the Model 100's firmware
@@ -662,6 +675,14 @@ void setup() {
   // repeat the primary key instead of activating alternate state (e.g.,
   // aaaaa…). Set to 0 to disable.
   Qukeys.setMaxIntervalForTapRepeat(0); // disabled (default 200)
+
+  // Increase the Model 100 keyscanner interval. Higher values mean the half
+  // scanners wait longer between samples, increasing effective debouncing and
+  // reducing duplicate keypresses from switch bounce.
+  //
+  // Start small and adjust upward until duplicates stop; back off if the board
+  // feels laggy or starts missing very fast taps.
+  kaleidoscope::device::keyboardio::Model100KeyScanner::setKeyscanInterval(8);
 
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
