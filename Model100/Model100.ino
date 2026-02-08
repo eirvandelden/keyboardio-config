@@ -681,6 +681,14 @@ void setup() {
   Qukeys.setMaxIntervalForTapRepeat(
       200); // default 200 - re-enabled for better tap behavior
 
+  // Enable the opposite-hands rule: a qukey only activates its modifier when
+  // the next key pressed is on the opposite hand. Same-hand rollover always
+  // produces the primary (tap) value. This prevents accidental modifiers
+  // during fast typing while still allowing intentional cross-hand chords.
+  // Holding a qukey alone past the hold timeout still activates the modifier
+  // (useful for shift+click with a mouse).
+  Qukeys.setEnableOppositeHandsRule(true);
+
   // Increase the Model 100 keyscanner interval. Higher values mean the half
   // scanners wait longer between samples, increasing effective debouncing and
   // reducing duplicate keypresses from switch bounce.
