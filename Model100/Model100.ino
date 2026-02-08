@@ -654,27 +654,32 @@ void setup() {
   // Time (ms) a qukey held alone will trigger its alternate (modifier) state.
   // Useful for shift+click. You don't need to wait this long when pressing
   // other keys.
-  Qukeys.setHoldTimeout(260); // default 250
+  Qukeys.setHoldTimeout(250); // default 250 - back to default
 
   // Minimum time (ms) a qukey must be held to be eligible for alternate state.
   // If released sooner, always produces primary key. Prevents accidental
-  // modifiers.
-  Qukeys.setMinimumHoldTime(80); // default 50
+  // modifiers when typing gently. Higher = less accidental modifiers.
+  Qukeys.setMinimumHoldTime(
+      200); // default 50 - increased to prevent accidental modifiers
 
   // How much overlap (%) required between qukey and next key to activate
   // modifier. When typing fast, you might release the qukey before fully
-  // pressing the next key. 80% = keys must overlap significantly. Lower values
-  // = more forgiving of rolling off keys.
-  Qukeys.setOverlapThreshold(80); // default 80, increased for fast typing
+  // pressing the next key. Higher = less accidental modifiers but harder to
+  // use intentional modifiers.
+  Qukeys.setOverlapThreshold(
+      80); // default 80 - back to default, 50 was too permissive
 
   // Minimum time (ms) between a prior key press and qukey press for qukey
   // to be eligible for alternate state. Prevents modifiers during fast typing.
-  Qukeys.setMinimumPriorInterval(75); // default 75, decreased for fast typing
+  // Higher = less likely to trigger modifiers during typing.
+  Qukeys.setMinimumPriorInterval(
+      120); // default 75 - increased to reduce accidental activation
 
   // Time (ms) after tapping a qukey where pressing it again and holding will
   // repeat the primary key instead of activating alternate state (e.g.,
   // aaaaa…). Set to 0 to disable.
-  // Qukeys.setMaxIntervalForTapRepeat(0); // disabled (default 200)
+  Qukeys.setMaxIntervalForTapRepeat(
+      200); // default 200 - re-enabled for better tap behavior
 
   // Increase the Model 100 keyscanner interval. Higher values mean the half
   // scanners wait longer between samples, increasing effective debouncing and
@@ -682,7 +687,7 @@ void setup() {
   //
   // Start small and adjust upward until duplicates stop; back off if the board
   // feels laggy or starts missing very fast taps.
-  kaleidoscope::device::keyboardio::Model100KeyScanner::setKeyscanInterval(8);
+  kaleidoscope::device::keyboardio::Model100KeyScanner::setKeyscanInterval(12);
 
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
