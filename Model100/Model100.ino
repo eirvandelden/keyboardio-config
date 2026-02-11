@@ -660,7 +660,7 @@ void setup() {
   // If released sooner, always produces primary key. Prevents accidental
   // modifiers when typing gently. Higher = less accidental modifiers.
   Qukeys.setMinimumHoldTime(
-      200); // default 50 - increased to prevent accidental modifiers
+      250); // default 50 - increased further for slow typing
 
   // How much overlap (%) required between qukey and next key to activate
   // modifier. When typing fast, you might release the qukey before fully
@@ -673,13 +673,13 @@ void setup() {
   // to be eligible for alternate state. Prevents modifiers during fast typing.
   // Higher = less likely to trigger modifiers during typing.
   Qukeys.setMinimumPriorInterval(
-      120); // default 75 - increased to reduce accidental activation
+      150); // default 75 - increased further for slow typing
 
   // Time (ms) after tapping a qukey where pressing it again and holding will
   // repeat the primary key instead of activating alternate state (e.g.,
   // aaaaa…). Set to 0 to disable.
   Qukeys.setMaxIntervalForTapRepeat(
-      200); // default 200 - re-enabled for better tap behavior
+      300); // default 200 - increased to reduce accidental repeats
 
   // Enable the opposite-hands rule: a qukey only activates its modifier when
   // the next key pressed is on the opposite hand. Same-hand rollover always
@@ -695,7 +695,7 @@ void setup() {
   //
   // Start small and adjust upward until duplicates stop; back off if the board
   // feels laggy or starts missing very fast taps.
-  kaleidoscope::device::keyboardio::Model100KeyScanner::setKeyscanInterval(12);
+  kaleidoscope::device::keyboardio::Model100KeyScanner::setKeyscanInterval(8);
 
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
