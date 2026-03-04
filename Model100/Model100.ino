@@ -695,7 +695,7 @@ void setup() {
   //
   // Start small and adjust upward until duplicates stop; back off if the board
   // feels laggy or starts missing very fast taps.
-  kaleidoscope::device::keyboardio::Model100KeyScanner::setKeyscanInterval(8);
+  kaleidoscope::device::keyboardio::Model100KeyScanner::setKeyscanInterval(2);
 
   // First, call Kaleidoscope's internal setup function
   Kaleidoscope.setup();
