@@ -220,10 +220,10 @@
         "categories": ["with-modifiers", "shift"],
         "baseCode": 46
       },
-      {"code": 30, "label": {"base": "1", "shifted": "!"}},
-      {"code": 31, "label": {"base": "2", "shifted": "@"}},
-      {"code": 32, "label": {"base": "3", "shifted": "#"}},
-      {"code": 33, "label": {"base": "4", "shifted": "$"}},
+      {"code": 49199, "baseCode": 30, "label": {"hint": "Control/", "base": "1"}, "modifier": "Control", "rangeStart": 49169, "categories": ["modifier", "dualuse", "ctrl"]},
+      {"code": 49712, "baseCode": 31, "label": {"hint": "Alt/", "base": "2"}, "modifier": "Alt", "rangeStart": 49169, "categories": ["modifier", "dualuse", "alt"]},
+      {"code": 49969, "baseCode": 32, "label": {"hint": "Command/", "base": "3"}, "modifier": "Command", "rangeStart": 49169, "categories": ["modifier", "dualuse", "gui"]},
+      {"code": 49458, "baseCode": 33, "label": {"hint": "Shift/", "base": "4"}, "modifier": "Shift", "rangeStart": 49169, "categories": ["modifier", "dualuse", "shift"]},
       {"code": 34, "label": {"base": "5", "shifted": "%"}},
       {
         "code": 65535,
@@ -246,10 +246,10 @@
         "categories": ["blanks"]
       },
       {"code": 35, "label": {"base": "6", "shifted": "^"}},
-      {"code": 36, "label": {"base": "7", "shifted": "&"}},
-      {"code": 37, "label": {"base": "8", "shifted": "*"}},
-      {"code": 38, "label": {"base": "9", "shifted": "("}},
-      {"code": 39, "label": {"base": "0", "shifted": ")"}},
+      {"code": 50485, "baseCode": 36, "label": {"hint": "Right Shift/", "base": "7"}, "modifier": "Right Shift", "rangeStart": 49169, "categories": ["modifier", "dualuse", "rshift"]},
+      {"code": 50998, "baseCode": 37, "label": {"hint": "Right Command/", "base": "8"}, "modifier": "Right Command", "rangeStart": 49169, "categories": ["modifier", "dualuse", "rgui"]},
+      {"code": 49719, "baseCode": 38, "label": {"hint": "Alt/", "base": "9"}, "modifier": "Alt", "rangeStart": 49169, "categories": ["modifier", "dualuse", "alt"]},
+      {"code": 50232, "baseCode": 39, "label": {"hint": "Right Control/", "base": "0"}, "modifier": "Right Control", "rangeStart": 49169, "categories": ["modifier", "dualuse", "rctrl"]},
       {
         "code": 65535,
         "label": {"base": {"full": "Transparent", "1u": " "}},
@@ -503,10 +503,7 @@
         "categories": ["blanks"]
       },
       {"code": 46, "label": {"base": "=", "shifted": "+"}},
-      {"code": 53, "label": {"base": "`", "shifted": "~"}},
-      {"code": 26, "label": {"base": "w", "shifted": "W"}},
-      {"code": 8, "label": {"base": "e", "shifted": "E"}},
-      {"code": 21, "label": {"base": "r", "shifted": "R"}},
+      {"code": 49222, "baseCode": 53, "label": {"hint": "Control/", "base": "`"}, "modifier": "Control", "rangeStart": 49169, "categories": ["modifier", "dualuse", "ctrl"]},
       {
         "code": 65535,
         "label": {"base": {"full": "Transparent", "1u": " "}},
@@ -537,10 +534,33 @@
         "label": {"base": {"full": "Transparent", "1u": " "}},
         "categories": ["blanks"]
       },
-      {"code": 24, "label": {"base": "u", "shifted": "U"}},
-      {"code": 48, "label": {"base": "]", "shifted": "}"}},
-      {"code": 47, "label": {"base": "[", "shifted": "{"}},
-      {"code": 19, "label": {"base": "p", "shifted": "P"}},
+      {
+        "code": 65535,
+        "label": {"base": {"full": "Transparent", "1u": " "}},
+        "categories": ["blanks"]
+      },
+      {
+        "code": 65535,
+        "label": {"base": {"full": "Transparent", "1u": " "}},
+        "categories": ["blanks"]
+      },
+      {
+        "code": 65535,
+        "label": {"base": {"full": "Transparent", "1u": " "}},
+        "categories": ["blanks"]
+      },
+      {
+        "code": 65535,
+        "label": {"base": {"full": "Transparent", "1u": " "}},
+        "categories": ["blanks"]
+      },
+      {"code": 51009, "baseCode": 48, "label": {"hint": "Right Command/", "base": "]"}, "modifier": "Right Command", "rangeStart": 49169, "categories": ["modifier", "dualuse", "rgui"]},
+      {"code": 49728, "baseCode": 47, "label": {"hint": "Alt/", "base": "["}, "modifier": "Alt", "rangeStart": 49169, "categories": ["modifier", "dualuse", "alt"]},
+      {
+        "code": 65535,
+        "label": {"base": {"full": "Transparent", "1u": " "}},
+        "categories": ["blanks"]
+      },
       {
         "code": 65535,
         "label": {"base": {"full": "Transparent", "1u": " "}},
