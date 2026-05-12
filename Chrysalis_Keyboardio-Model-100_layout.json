@@ -504,6 +504,9 @@
       },
       {"code": 46, "label": {"base": "=", "shifted": "+"}},
       {"code": 53, "label": {"base": "`", "shifted": "~"}},
+      {"code": 26, "label": {"base": "w", "shifted": "W"}},
+      {"code": 8, "label": {"base": "e", "shifted": "E"}},
+      {"code": 21, "label": {"base": "r", "shifted": "R"}},
       {
         "code": 65535,
         "label": {"base": {"full": "Transparent", "1u": " "}},
@@ -534,33 +537,10 @@
         "label": {"base": {"full": "Transparent", "1u": " "}},
         "categories": ["blanks"]
       },
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
+      {"code": 24, "label": {"base": "u", "shifted": "U"}},
       {"code": 48, "label": {"base": "]", "shifted": "}"}},
       {"code": 47, "label": {"base": "[", "shifted": "{"}},
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
+      {"code": 19, "label": {"base": "p", "shifted": "P"}},
       {
         "code": 65535,
         "label": {"base": {"full": "Transparent", "1u": " "}},
