@@ -42,6 +42,10 @@ namespace keyboardio {
 // Support for controlling the keyboard's LEDs
 #include "Kaleidoscope-LEDControl.h"
 
+// Support for an LED mode whose colour is chosen by the computer rather than by
+// the keyboard, so Home Assistant can say whether I am free to interrupt
+#include "Kaleidoscope-AvailabilityLight.h"
+
 // Support for the "Boot greeting" effect, which pulses the 'LED' button for 10s
 // when the keyboard is connected to a computer (or that computer is powered on)
 #include "Kaleidoscope-LEDEffect-BootGreeting.h"
@@ -581,6 +585,10 @@ KALEIDOSCOPE_INIT_PLUGINS(
     // We start with the LED effect that turns off all the LEDs.
     LEDOff,
 
+    // The availability light waits to be told what colour to be, and fades to
+    // whatever the computer asks for.
+    AvailabilityLight,
+
     // The rainbow effect changes the color of all of the keyboard's keys at the
     // same time running through all the colors of the rainbow.
     // LEDRainbowEffect,
@@ -790,10 +798,11 @@ void setup() {
   // reserve 17 / layer in total.
   LayerNames.reserve_storage(17 * 8);
 
-  // Unless configured otherwise with Chrysalis, we want to make sure that the
-  // firmware starts with LED effects off. This avoids over-taxing devices that
-  // don't have a lot of power to share with USB devices
-  DefaultLEDModeConfig.activateLEDModeIfUnconfigured(&LEDOff);
+  // Unless configured otherwise with Chrysalis, the keyboard starts showing the
+  // availability light, so it is ready to be told a colour the moment it is
+  // plugged in. The light keeps itself inside the power budget that starting
+  // with the LEDs off used to protect.
+  DefaultLEDModeConfig.activateLEDModeIfUnconfigured(&AvailabilityLight);
 }
 
 /** loop is the second of the standard Arduino sketch functions.
