@@ -76,10 +76,10 @@
       {"code": 9, "label": {"base": "f", "shifted": "F"}},
       {"code": 10, "label": {"base": "g", "shifted": "G"}},
       {
-        "code": 3043,
-        "baseCode": 227,
-        "categories": ["ctrl", "shift", "alt"],
-        "label": {"base": "Hyper"}
+        "code": 278,
+        "label": {"hint": {"full": "Control+", "1u": "C+"}, "base": "s"},
+        "categories": ["with-modifiers", "ctrl"],
+        "baseCode": 22
       },
       {"code": 43, "label": {"base": "Tab"}},
       {"code": 76, "label": {"base": {"full": "Delete", "1u": "Del"}}},
