@@ -230,7 +230,7 @@ Fewer keys, more reach:
 - **Layer Lock**: lock whatever layer is held.
 - **Repeat Key**: a key that repeats the previous key.
 
-Caution with software Dvorak: **Autocorrect** and **Caps Word** decide by QWERTY key code, not by the letter the Mac shows. Autocorrect's dictionary would have to be written in QWERTY positions. Caps Word treats `KC_MINS` as a word character, but my `-` is `KC_QUOT`, so it needs a `caps_word_press_user()` override.
+Caps Word and Autocorrect are left out of the first switch. They need extra work because of software Dvorak. See [Features that read key codes as letters](#features-that-read-key-codes-as-letters).
 
 Lights:
 
@@ -241,6 +241,66 @@ Lights:
 Talking to the computer:
 
 - **Raw HID** (`RAW_ENABLE = yes`): a direct channel between a computer program and the keyboard. This is where the shelved availability light would go.
+
+## Features that read key codes as letters
+
+The keyboard does not know the Mac uses Dvorak. It sends the code for a physical position, named after the QWERTY letter there, and macOS turns that into a Dvorak letter. Features that run on the keyboard and look at letters see the QWERTY name, not the letter I see.
+
+Neither Caps Word nor Autocorrect is enabled on the first switch to QMK. This section records what each would need.
+
+### Caps Word
+
+Caps Word types capitals until the end of the word. QMK's default `caps_word_press_user()` shifts and continues on `KC_A`–`KC_Z` and `KC_MINS`, continues without shift on digits, `KC_BSPC`, `KC_DEL` and `KC_UNDS`, and ends on anything else. Under software Dvorak:
+
+| I type | Key code sent | Default Caps Word | Result |
+|---|---|---|---|
+| `s`, `w`, `v`, `z` | `KC_SCLN`, `KC_COMM`, `KC_DOT`, `KC_SLSH` | ends the word | `MAX_RETRIES` becomes `MAX_RETRIEs` |
+| `'` `,` `.` `;` | `KC_Q`, `KC_W`, `KC_E`, `KC_Z` | shifts them | `,` becomes `<`, `.` becomes `>` |
+| `-` | `KC_QUOT` | ends the word | `FOO-BAR` stops after `FOO` |
+
+To enable it later, add `CAPS_WORD_ENABLE = yes` to `rules.mk` and override the rule with Dvorak names:
+
+```c
+bool caps_word_press_user(uint16_t keycode) {
+    switch (keycode) {
+        case DV_A: case DV_B: case DV_C: case DV_D: case DV_E: case DV_F:
+        case DV_G: case DV_H: case DV_I: case DV_J: case DV_K: case DV_L:
+        case DV_M: case DV_N: case DV_O: case DV_P: case DV_Q: case DV_R:
+        case DV_S: case DV_T: case DV_U: case DV_V: case DV_W: case DV_X:
+        case DV_Y: case DV_Z:
+            add_weak_mods(MOD_BIT(KC_LSFT));
+            return true;
+        case KC_1 ... KC_0:
+        case KC_BSPC:
+        case KC_DEL:
+        case DV_MINS:
+        case DV_UNDS:
+            return true;
+        default:
+            return false;
+    }
+}
+```
+
+This keeps `-` unshifted inside a word. Moving `DV_MINS` into the shifted group turns `-` into `_` instead.
+
+A way to turn it on is also needed: a key (`CW_TOGG`) or `#define BOTH_SHIFTS_TURNS_ON_CAPS_WORD`.
+
+### Autocorrect
+
+Autocorrect keeps a list of recent keys and compares it with a list of typos built into the firmware. On a match it sends backspaces and the correct letters. Three things break under software Dvorak:
+
+1. The typo list is converted to QWERTY key codes. `teh -> the` watches for `KC_T KC_E KC_H`, which I type as `y.d`, and replaces it with what the Mac shows as `yd.`. The list would have to be translated into QWERTY positions first.
+2. Only `KC_A`–`KC_Z` count as letters. My `s`, `w`, `v` and `z` send punctuation codes and count as word breaks, so no typo containing them can ever match.
+3. My `'` `,` `.` `;` send letter codes, so a comma after a word does not end the word.
+
+`process_autocorrect_user()` can redefine which keys count as letters, which fixes points 2 and 3. With point 1 as well, that means keeping a custom version of the feature. The simpler choice is macOS's own spelling correction, which works after the Dvorak translation and sees real letters.
+
+### Other features that care
+
+- **Leader key** sequences are key codes: write `DV_S`, not `KC_S`.
+- **Typed text** (`SEND_STRING`) goes through a QWERTY table by default, so `SEND_STRING("hello")` shows up as `d.nnr`. Add `#include "sendstring_dvorak.h"` to the keymap before using it.
+- Combos, Tap Dance, Key Overrides, Chordal Hold and Flow Tap only deal with positions and are not affected.
 
 ## Proposed order of work
 
