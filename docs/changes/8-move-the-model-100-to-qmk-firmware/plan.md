@@ -42,6 +42,17 @@ Facts checked while planning (2026-09-30):
 - `docs/changes/8-move-the-model-100-to-qmk-firmware/keyboard-checklist.md` (new) — the on-keyboard checks from acceptance criteria 4–12, one tick box each, with one line per key per layer for criterion 4. It adds checks for the numbers and navigation mod-taps and for holding two modifiers together, because Flow Tap's default filter leaves digits, grave and brackets without Flow Tap protection. It says the same-hand `pu` check must be done within 200 ms: after `TAPPING_TERM`, Chordal Hold no longer stops a hold. It has a findings section for regressions seen during the week.
 - `project-dictionary.txt` — any new words cspell flags in the files above.
 
+Added while building (2026-10-01):
+
+- `lib/keymap_parity.rb` (new) — the namespace, `KeymapParity::Error` and the shared `MODIFIERS` list; it requires the classes.
+- `lib/keymap_parity/qmk_names.rb` (new) — `QmkNames`: the table from QMK names to key codes and the reading of `LCTL(...)`, `LCTL_T(...)`, `MO(...)` and `TG(...)`. Split out of `QmkKeymap` to keep both classes small. `QmkKeymap` keeps the matrix mapping, the shape checks, the enum check and the `qmk` calls (`QmkKeymap::Command`).
+- `test/test_helper.rb` (new) — builds Chrysalis and QMK fragments for the tests.
+- `test/keymap_parity/fixtures/c2json.json` and `qmk_info.json` (new) — the real tool output from steps 3 and 6.
+- `.gitignore` (new) — `*.bin`, `*.hex`, `.build/`, because `qmk compile` copies the firmware into the repository root.
+- Extra tests beyond the list below: Chrysalis plain, no-key, transparent, consumer, LED and layer decoding; inner-column position; names decoded as Chrysalis does; layer designators after a closing parenthesis; no difference on untouched keymaps; Mission Control against `KC_MCTL` elsewhere.
+- The layer designator check looks for `[NAME] = LAYOUT` anywhere in the line, because `clang-format` joins `), [NUMBERS] = LAYOUT(` onto one line.
+- `qmk compile` needs the keg-only Homebrew compilers on `PATH` (`/opt/homebrew/opt/arm-none-eabi-gcc@8/bin` and `/opt/homebrew/opt/arm-none-eabi-binutils/bin`); `brew link` was not run. `user.overlay_dir` points at this worktree.
+
 Not changed: `Model01/`, `Model100/`, `Chrysalis_Keyboardio-Model-100_layout.json`, `Chrysalis_Keyboardio-Model-01_layout.json`, `Chrysalis.pdf`, `README.md`.
 
 ## Order of work

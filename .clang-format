@@ -1,4 +1,3 @@
 BasedOnStyle: Google
 ColumnLimit: 0
 WhitespaceSensitiveMacros: [LAYOUT]
-AllowShortEnumsOnASingleLine: true

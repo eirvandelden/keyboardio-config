@@ -54,3 +54,6 @@ DQUO
 LABK
 RABK
 TRNS
+eabi
+binutils
+keypos
