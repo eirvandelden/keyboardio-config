@@ -1,0 +1,16 @@
+#include QMK_KEYBOARD_H
+#include "keymap_dvorak.h"
+
+enum layers { BASE,
+              NUMBERS,
+              NAVIGATION,
+              MEDIA };
+
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+    [BASE] = LAYOUT(
+    XXXXXXX        , DV_1           , DV_2           , DV_3           , DV_4           , DV_5           , DV_6           , DV_7           , DV_8           , DV_9           , DV_0           , TG(NUMBERS)    ,
+    DV_LCBR        , LCTL_T(DV_QUOT), LALT_T(DV_COMM), LGUI_T(DV_DOT) , LSFT_T(DV_P)   , DV_Y           , RM_NEXT        , KC_MPRV        , DV_F           , RSFT_T(DV_G)   , RGUI_T(DV_C)   , LALT_T(DV_R)   , RCTL_T(DV_L)   , DV_EQL         ,
+    DV_LPRN        , DV_A           , DV_O           , DV_E           , DV_U           , DV_I           , KC_MCTL        , KC_MPLY        , DV_D           , DV_H           , DV_T           , DV_N           , DV_S           , DV_MINS        ,
+    DV_LBRC        , DV_SCLN        , DV_Q           , DV_J           , DV_K           , DV_X           , LCTL(DV_S)     , KC_MNXT        , DV_B           , DV_M           , DV_W           , DV_V           , DV_Z           , DV_BSLS        ,
+    KC_ESC         , KC_BSPC        , KC_ENT         , KC_SPC         , KC_TAB         , KC_DEL         , KC_LSFT        , KC_RSFT        , MO(NUMBERS)    , MO(NAVIGATION)
+  ) };
