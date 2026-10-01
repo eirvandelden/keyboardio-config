@@ -28,8 +28,11 @@ module KeymapParity
       "KC_VOLD" => 0xea, "KC_BRIU" => 0x6f, "KC_BRID" => 0x70, "KC_MCTL" => 0x29f
     }.freeze
     LED = { "RM_NEXT" => :next, "RM_PREV" => :previous, "RM_TOGG" => :toggle }.freeze
-    WRAPPERS = MODIFIERS.index_by { |mod| mod.to_s.upcase }.freeze
-    MOD_TAPS = MODIFIERS.index_by { |mod| "#{mod.to_s.upcase}_T" }.freeze
+    WRAPPERS = {
+      "LCTL" => :lctl, "LSFT" => :lsft, "LALT" => :lalt, "LGUI" => :lgui,
+      "RCTL" => :rctl, "RSFT" => :rsft, "RALT" => :ralt, "RGUI" => :rgui
+    }.freeze
+    MOD_TAPS = WRAPPERS.transform_keys { |name| "#{name}_T" }.freeze
     CALL = /\A(\w+)\((.*)\)\z/
 
     def initialize(layer_names)
