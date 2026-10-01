@@ -101,4 +101,15 @@ class ComparisonTest < Minitest::Test
     assert_match(/layer 1 r1c1/, report.first)
     assert_match(/Chrysalis layer 3 r0c0/, report.last)
   end
+
+  def test_real_chrysalis_export_against_real_c2json_output_reports_no_differences
+    root = File.expand_path("../..", __dir__)
+    chrysalis = KeymapParity::ChrysalisLayout.new(JSON.parse(File.read(File.join(root, "Chrysalis_Keyboardio-Model-100_layout.json"))))
+    layers = JSON.parse(File.read(File.join(__dir__, "fixtures/c2json.json"))).fetch("layers")
+    source = File.read(File.join(root, "keyboards/keyboardio/model100/keymaps/eirvandelden/keymap.c"))
+
+    qmk = KeymapParity::QmkKeymap.new(layers, layout_positions, source)
+
+    assert_empty KeymapParity::Comparison.new(chrysalis, qmk).report
+  end
 end

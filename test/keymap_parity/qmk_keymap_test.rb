@@ -70,6 +70,12 @@ class QmkKeymapTest < Minitest::Test
     assert_includes error.message, "order"
   end
 
+  def test_layer_designators_may_follow_a_closing_parenthesis_on_the_same_line
+    joined = keymap_source.gsub(")," + "\n  [", "), [")
+
+    assert_equal [ :layer, :momentary, 2 ], qmk_keymap({ [ 0, 0 ] => "MO(NAVIGATION)" }, source: joined).key(0, 0, 0)
+  end
+
   def test_failing_qmk_command_stops_with_its_output
     error = assert_raises(KeymapParity::Error) do
       KeymapParity::QmkKeymap::Command.new.call("sh", "-c", "echo broken >&2; exit 3")

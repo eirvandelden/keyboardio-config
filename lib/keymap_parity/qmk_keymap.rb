@@ -7,7 +7,7 @@ module KeymapParity
     KEY_COUNT = 64
     KALEIDOSCOPE_POSITIONS = (0..3).to_a.product((0..15).to_a).freeze
     ENUM = /enum\s+layers\s*\{([^}]*)\}/m
-    DESIGNATOR = /^\s*\[(\w+)\]\s*=\s*LAYOUT/
+    DESIGNATOR = /\[(\w+)\]\s*=\s*LAYOUT/
 
     # Runs a command and returns its output, or stops with what it printed.
     class Command
