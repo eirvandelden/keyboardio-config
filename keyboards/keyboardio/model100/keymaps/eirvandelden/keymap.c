@@ -32,3 +32,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_BRID, KC_BRIU, _______, _______,
     _______, KC_MUTE, _______, _______, _______, _______, _______, _______, _______, _______
   ) };
+
+// Rows 0-3 of the matrix are the left half, rows 4-7 the right half.
+char chordal_hold_handedness(keypos_t key) {
+  return key.row < MATRIX_ROWS / 2 ? 'L' : 'R';
+}
