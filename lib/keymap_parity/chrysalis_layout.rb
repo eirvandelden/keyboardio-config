@@ -2,7 +2,6 @@ module KeymapParity
   # Reads the Chrysalis export and describes the key at a layer and Kaleidoscope position.
   class ChrysalisLayout
     KEYS_PER_ROW = 16
-    MODIFIERS = %i[lctl lsft lalt lgui rctl rsft ralt rgui].freeze
     FLAG_MODIFIERS = { 0x100 => :lctl, 0x200 => :lalt, 0x400 => :ralt, 0x800 => :lsft, 0x1000 => :lgui }.freeze
     TRANSPARENT = 65_535
     DUAL_USE = 49_169..(49_169 + 0x7ff)

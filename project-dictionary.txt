@@ -49,3 +49,8 @@ bootmagic
 extrakey
 mousekey
 autorun
+TILD
+DQUO
+LABK
+RABK
+TRNS
