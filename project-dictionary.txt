@@ -43,3 +43,9 @@ UNDS
 UPPR
 VOLD
 VOLU
+ralt
+duino
+bootmagic
+extrakey
+mousekey
+autorun
