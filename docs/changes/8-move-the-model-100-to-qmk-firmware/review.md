@@ -24,3 +24,45 @@ None of the 30 unit tests named in `plan.md` `## Proof` exist yet (`test/keymap_
 - [ ] Nit: "They are system tools, and an agent should not install them" contradicts plan step 0, where Etienne gave the implementing agent permission to install the QMK CLI and clone the source. Not in the plan's doc-update list — `docs/qmk-migration.md:46` →
 - [ ] Nit: "flash the kept Kaleidoscope `.bin` with the same `dfu-util` command as in step 4". Step 4 runs `qmk flash` and only paraphrases the `dfu-util` call with a `<firmware>.bin` placeholder. Spec requirement 13 asks the doc to describe the way back, so give the literal command with the kept file's path — `docs/qmk-migration.md:42` →
 - [ ] Nit: `cspell.yml` points to the machine-local `~/.config/cspell/user-dictionary.txt` with `addWords: true`. Words added from this repository can go to the personal dictionary instead of `project-dictionary.txt`, and a fresh clone without that file gets a missing-dictionary warning — `cspell.yml:7` →
+
+## Round 2 — 2026-10-01T15:56Z — 6ca0c60
+
+Scope: `origin/main...HEAD` (16 commits, 26 files). The working tree is clean, and the branch is 8 commits ahead of `origin`. There is no `REVIEW.md`, so the default passes ran: Bugs, Security, Compliance.
+
+Run on this machine:
+
+- `ruby -Ilib -Itest -e 'Dir["test/**/*_test.rb"].each { require File.expand_path(it) }'`: 42 runs, 109 assertions, 0 failures.
+- `rubocop bin lib test`: 9 files, no offenses.
+- `clang-format --dry-run --Werror` on `keymap.c` and `config.h`: clean.
+- `cspell` on every changed file: 0 issues.
+- `qmk compile -kb keyboardio/model100 -km eirvandelden` (QMK at `2c745388201b633ba04036b17157669632d1740a`, the keg-only compilers on `PATH`): exits 0, and the build artefacts are ignored by `.gitignore`.
+- `bin/keymap-parity`: exits 0 and prints nothing.
+- The current `qmk c2json --no-cpp` output equals `test/keymap_parity/fixtures/c2json.json`, so the fixture is current.
+
+Bugs pass: the Kaleidoscope decoding was checked against the fork's constants: modifier flags in bits 8–12, dual-use at 49169, consumer at `0x48xx`, LED at 17152–17154, lock at 17408 and shift at 17450. The matrix mapping was checked against the `qmk info` fixture: the thumb row alternates left and right, and the inner columns sit at positions 6–7 of each row. The Chrysalis layer keys target only layers 1, 2 and 4. The Chordal Hold callback splits the matrix at `MATRIX_ROWS / 2`, which gives the documented rows 0–3 and 4–7.
+
+Security pass: nothing found. `QmkKeymap::Command` passes an argument array to `Open3.capture3`, without a shell. The repository has no secrets, no CI and no deploy configuration.
+
+Round 1: its three Important findings are resolved in the current files (`1ee038c` in step 1, `qmk.json` written by hand before `userspace-add`, proofs now present), and so are its `dfu-util` and "agent should not install" nits. Their `→` slots are still empty. Two round 1 nits are still open and appear again below.
+
+Compliance, spec acceptance criteria against proof in the diff:
+
+| Criterion | Proof |
+|---|---|
+| 1. `eirvandelden` compiles against the recorded commit | `qmk compile` exits 0 (run above); commit pinned in `docs/qmk-migration.md` |
+| 2. Parity on base, numbers, navigation and media | `bin/keymap-parity` exits 0; `test_real_chrysalis_export_against_real_c2json_output_reports_no_differences` |
+| 3. Sketches and Chrysalis layout unchanged | `git diff --exit-code origin/main -- Model01 Model100 Chrysalis_Keyboardio-Model-100_layout.json` exits 0 |
+| 4–11. On-keyboard checks | `keyboard-checklist.md` sections exist, nothing ticked yet (nothing has been flashed; expected, the branch stays open for the week) |
+| 12. No Caps Word or Autocorrect | the plan's `grep` exits 1; `rules.mk` is empty; checklist entry exists |
+
+All 30 tests named in `plan.md` `## Proof` exist. No existing test was weakened, skipped or deleted (the branch adds the repository's first tests). Requirement 9 in `spec.md` still says `TAPPING_TERM 250` and `QUICK_TAP_TERM 250`. `plan.md` records Etienne's 2026-09-30 choice of QMK's default timing instead, and `config.h` follows the plan.
+
+- [ ] Nit: The plan's test command fails with `cannot load such file -- test_helper (LoadError)`, because the tests `require "test_helper"` and `test/` is not on the load path. Add `-Itest` to both commands. The repository documents no other way to run the tests — `docs/changes/8-move-the-model-100-to-qmk-firmware/plan.md:161` →
+- [ ] Nit: `MEDIA_TARGET` renumbers only target 4. A Chrysalis layer key that targets empty layer 3 also decodes to target 3, so it would match `MO(MEDIA)` or `TG(MEDIA)`, and the parity check would pass. Today's export targets only 1, 2 and 4, so no difference is hidden now. Raising on a target in `Comparison::UNUSED_LAYERS` would close the gap — `lib/keymap_parity/chrysalis_layout.rb:12` →
+- [ ] Nit: `bin/keymap-parity` rescues only `KeymapParity::Error`. A `qmk` command that exits 0 but prints non-JSON, or an invalid Chrysalis file, ends in a raw `JSON::ParserError` backtrace instead of a `keymap-parity:` message — `bin/keymap-parity:9` →
+- [ ] Nit: Still open from round 1. "The inner-column keys ... sit at the end of rows 1–3" disagrees with `keymap.c` and the `qmk info` layout, where they are positions 6–7 of each 14-key row, between the halves — `docs/qmk-migration.md:134` →
+- [ ] Nit: Still open from round 1. Space is on the right thumb (layout matrix `[5, 7]`; the checklist also lists it under "Right thumb keys"). "a left mod plus left-thumb `Enter` or `Space`" should name only left-thumb keys, for example `Enter` or `Tab` — `docs/qmk-migration.md:188` →
+
+1 more nit not listed (`qmk.json` has no trailing newline).
+
+<!-- cspell:words Ilib Itest rubocop Werror -->
