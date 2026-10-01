@@ -27,7 +27,7 @@ module QmkFixtures
 
   # overrides: { [layer, layout_index] => "QMK_NAME" }
   def qmk_keymap(overrides = {}, layers: 4, source: keymap_source, positions: layout_positions)
-    names = Array.new(layers) { Array.new(positions.size) { "KC_TRNS" } }
+    names = Array.new(layers) { |layer| Array.new(positions.size) { layer.zero? ? "KC_NO" : "KC_TRNS" } }
     overrides.each { |(layer, index), name| names[layer][index] = name }
     KeymapParity::QmkKeymap.new(names, positions, source)
   end
