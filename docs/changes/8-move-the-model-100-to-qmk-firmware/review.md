@@ -113,4 +113,27 @@ Compliance: unchanged from round 3. Criteria 1–3 and 12 are proven by the runs
 - [x] Nit: `test_qmk_output_of_the_wrong_shape_stops_with_a_readable_message` returns `{}` for both `qmk` commands, so the `qmk info` check fires first and the new `"qmk c2json printed no layers"` branch never runs in a test. The assertion (`"qmk"`) is also loose enough to pass on either message. Give `qmk info` the fixture output and assert on `"layers"` — `test/keymap_parity/qmk_keymap_test.rb:96` → fixed (Test each wrong-shaped qmk output on its own)
 - [x] Nit: Two wrong shapes in the Chrysalis export still end in a raw backtrace: a key without `"code"` raises `KeyError`, and a layer with fewer than 64 keys raises `IndexError` (both checked in this review). `ChrysalisLayout#key` rescues only `KeymapParity::Error`. A real Chrysalis export does not have these shapes, so this is low value — `lib/keymap_parity/chrysalis_layout.rb:28` → fixed (Name the position of a Chrysalis key that has no code or is missing)
 
+## Round 5 — 2026-10-02T08:05Z — 40acf01
+
+Scope: `origin/main...HEAD` (34 commits, 26 files), with focus on the 3 commits since round 4 (`5a589ee..40acf01`). The working tree is clean. There is no `REVIEW.md`, so the default passes ran: Bugs, Security, Compliance.
+
+Run on this machine:
+
+- Minitest (the plan's command): 52 runs, 139 assertions, 0 failures.
+- `rubocop bin lib test`: 9 files, no offenses.
+- `clang-format --dry-run --Werror` on `keymap.c` and `config.h`: clean.
+- `cspell` on every changed file: 26 files, 0 issues.
+- `qmk compile -kb keyboardio/model100 -km eirvandelden` (QMK at `2c745388201b633ba04036b17157669632d1740a`, the keg-only compilers on `PATH`): exits 0.
+- `bin/keymap-parity`: exits 0 and prints nothing.
+- `git diff --exit-code origin/main -- Model01 Model100 Chrysalis_Keyboardio-Model-100_layout.json`: exits 0.
+- The plan's Caps Word and Autocorrect `grep`: exits 1.
+
+Bugs pass: the round 4 fixes hold. The `qmk c2json` and `qmk info` wrong-shape tests now each feed one bad output, and each asserts on its own message, so both branches run. A Chrysalis key without `"code"` and a layer with fewer than 64 keys now stop with the layer and `r<row>c<col>`. The new `KeyError` rescue in `ChrysalisLayout#key` does not hide a real decoding error: `MODIFIERS.fetch(value >> 8)` gets 0–7 only, and the other `fetch` calls guard with `key?` or a block. A `null` key or a string `"code"` still raises `NoMethodError` (checked in this review). A real Chrysalis export does not have these shapes. The parity script has now been hardened over three rounds against input it does not get, so no finding is raised for this; it is not worth another round.
+
+Security pass: nothing found. No new external input.
+
+Compliance: unchanged from round 4. Criteria 1–3 and 12 are proven by the runs above. Criteria 4–11 wait on the keyboard; in `keyboard-checklist.md` only the two criterion 12 lines are ticked. The way-back `.bin` (spec requirement 12) is not yet at `~/Documents/keyboardio/`; it is required before the first QMK flash. All 30 tests named in `plan.md` `## Proof` still exist. Round 4 replaced one test with two narrower ones and added two; none was weakened, skipped or deleted. The branch is 26 commits ahead of its `origin` branch, so this round and rounds 3–4 are not pushed yet.
+
+No findings.
+
 <!-- cspell:words Ilib Itest rubocop Werror -->
