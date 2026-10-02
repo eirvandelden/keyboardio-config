@@ -43,6 +43,7 @@ Going back: hold `Prog`, plug in, and flash the kept `.bin` with `dfu-util -d 34
 
 ## Step 2: install the QMK tools
 
+- Homebrew refuses formulas from a tap it does not trust. The QMK formula comes from `qmk/qmk` and needs compilers from `osx-cross/arm` and `osx-cross/avr`. Trust all three first: `brew trust qmk/qmk && brew tap osx-cross/arm && brew tap osx-cross/avr && brew trust osx-cross/arm && brew trust osx-cross/avr`.
 - QMK CLI: `brew install qmk/qmk/qmk`. It brings the ARM compiler and `dfu-util`.
 - Check afterwards with `qmk doctor`.
 - Homebrew installs both compilers keg-only, so `qmk doctor` reports `arm-none-eabi-gcc` and `avr-gcc` as missing, and `qmk compile` fails with `arm-none-eabi-gcc: command not found`. Builds work with them on `PATH`: `export PATH=/opt/homebrew/opt/arm-none-eabi-gcc@8/bin:/opt/homebrew/opt/arm-none-eabi-binutils/bin:$PATH`. `qmk c2json` and `qmk info` need no compiler.
