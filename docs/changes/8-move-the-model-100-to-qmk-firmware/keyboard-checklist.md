@@ -84,6 +84,8 @@ Criterion 8.
 Criterion 9.
 
 - [x] LED next changes the light effect.
+- [ ] After flashing, the lights start off. The LED key cycles solid colour, breathing, rainbow wave, key-press fade and off, and nothing else.
+- [ ] Unplug and plug back in: the lights start off again.
 - [ ] LED toggle turns the lights off and on.
 
 ## No Caps Word or Autocorrect

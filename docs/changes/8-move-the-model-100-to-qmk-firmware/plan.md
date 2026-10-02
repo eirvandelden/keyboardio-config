@@ -55,6 +55,22 @@ Added while building (2026-10-01):
 
 Not changed: `Model01/`, `Model100/`, `Chrysalis_Keyboardio-Model-100_layout.json`, `Chrysalis_Keyboardio-Model-01_layout.json`, `Chrysalis.pdf`, `README.md`.
 
+Added after the first flash (2026-10-02), at Etienne's request — the port's 29 light effects are too many:
+
+- `keyboards/keyboardio/model100/keymaps/eirvandelden/config.h` — `#undef` the port's effects except `ENABLE_RGB_MATRIX_BREATHING` and `ENABLE_RGB_MATRIX_CYCLE_LEFT_RIGHT` (rainbow wave). Add `ENABLE_RGB_MATRIX_SOLID_REACTIVE_SIMPLE` (key-press fade) with `RGB_MATRIX_KEYPRESSES`, which that effect needs. QMK reads the keymap's `config.h` after the keyboard's generated `info_config.h`, so the `#undef`s take effect. QMK's solid colour effect is always compiled in and cannot be removed, so it stays in the cycle.
+- `keyboards/keyboardio/model100/keymaps/eirvandelden/rgb_matrix_user.inc` (new) and `rules.mk` (`RGB_MATRIX_CUSTOM_USER = yes`) — a custom `lights_off` effect that sets every LED to black, so "off" is a step of the LED key's cycle, as on Kaleidoscope.
+- `keymap.c` — `keyboard_post_init_user()` switches to `lights_off` without saving it (`rgb_matrix_mode_noeeprom`), so the keyboard starts with the lights off on every power-up, as Kaleidoscope returned to its default mode. This also avoids a saved mode number from the 29-effect list pointing at a different effect.
+- The LED key then cycles: solid colour, breathing, rainbow wave, key-press fade, off.
+- Proof: `qmk compile` succeeds; on the keyboard, the checklist's "Light keys" checks. The `## Out of scope` LED line still holds for #11's rainbow trail, per-layer colours, idle and sleep.
+
+Found on the keyboard (2026-10-02): the left inner middle key opened Spotlight on Kaleidoscope, not Mission Control. Chrysalis labels its code (consumer usage `0x2A2`) "Mission Control", and the spec followed that label with `KC_MCTL`, which opens Mission Control. Etienne needs Spotlight:
+
+- `keymap.c` — that key becomes `LGUI(KC_SPC)` (Cmd+Space). Cmd+Space is the Spotlight shortcut itself, so it does not depend on how macOS reads consumer usages.
+- `lib/keymap_parity/comparison.rb` — the accepted exception at base layer `r1c6` becomes Chrysalis `0x2A2` against QMK Cmd+Space, named for Spotlight. `KC_MCTL` at that position is now a difference.
+- `docs/qmk-migration.md` and `keyboard-checklist.md` — name the key Spotlight and drop the `KC_MCTL` advice.
+- Tests first in `test/keymap_parity/comparison_test.rb`: Cmd+Space at the Spotlight position is allowed, `KC_MCTL` there is reported, and Cmd+Space elsewhere against `0x2A2` is reported.
+- This replaces the intent's and spec's `KC_MCTL` constraint, which rested on the Chrysalis label rather than on what the key did.
+
 ## Order of work
 
 0. Set up the QMK tools. On 2026-09-30 Etienne gave the implementing agent explicit permission to install the QMK tools and clone the QMK source. This overrides the intent's "I install the QMK tools on my machine myself" and playbook rule 8 for these commands only:
@@ -160,4 +176,4 @@ Per changed file, the unit tests expected, named as behaviour:
 
 Test setup: `ruby -Ilib -Itest -e 'Dir["test/**/*_test.rb"].each { require File.expand_path(it) }'` (or one file: `ruby -Ilib -Itest test/keymap_parity/comparison_test.rb`). Tests build tiny Chrysalis and QMK layer fragments inline and inject the `qmk` command runner, so they run without QMK installed. One integration test reads the real `c2json` and `qmk info` output saved in step 3. The acceptance runs (`qmk compile`, `bin/keymap-parity`) need step 0 done first.
 
-<!-- cspell:words rubocop RuboCop keypos TRNS worktree Werror hjson Ilib Itest -->
+<!-- cspell:words rubocop RuboCop keypos TRNS worktree Werror hjson Ilib Itest noeeprom -->
