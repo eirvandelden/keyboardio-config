@@ -211,4 +211,28 @@ Compliance: criteria 1–3 and 12 are proven by the runs above. Criteria 4–11 
 - [x] Nit: A key's press time is never cleared, and `timer_elapsed32()` wraps after 2^32 ms, about 49.7 days. A key last pressed about 49.7 days ago, with the keyboard powered all that time, gets an elapsed time near 0 again and lights for 5 s with no press. Rare keys, such as the palm or LED keys, are the likely ones. Fix: when `key_fade_elapsed()` reaches `KEY_FADE_MS`, set the press time back to 0, for example through a `key_fade_forget(led)` beside `key_fade_pressed_at()` — `keyboards/keyboardio/model100/keymaps/eirvandelden/rgb_matrix_user.inc:24` fixed (Forget a key's press once its fade has finished)
 - [x] Nit: `remember_press()` sizes its buffer with `LED_HITS_TO_REMEMBER`, the size of the shared hit list that the comment above it says the fade no longer uses. QMK does the same in `process_rgb_matrix()`, so it is correct, but it reads as if the shared list is still involved. A local `#define` with a one-line reason, or a short comment, makes the intent clear — `keyboards/keyboardio/model100/keymaps/eirvandelden/keymap.c:67` fixed (Forget a key's press once its fade has finished)
 
+## Round 9 — 2026-10-02T10:05Z — 7e99b8b
+
+Scope: `origin/main...HEAD` (60 commits, 27 files), with focus on the 2 commits since round 8 (`1b7e12f..7e99b8b`): the press time cleared once its fade has finished, and the comment on the press buffer's size. The working tree is clean. There is no `REVIEW.md` or `REVIEW.local.md`, so the default passes ran: Bugs, Security, Compliance.
+
+Run on this machine:
+
+- Minitest (the plan's command): 53 runs, 140 assertions, 0 failures.
+- `rubocop bin lib test`: 9 files, no offenses.
+- `clang-format --dry-run --Werror` on `keymap.c` and `config.h`: clean.
+- `cspell` on every changed file: 27 files, 0 issues.
+- `qmk compile -kb keyboardio/model100 -km eirvandelden` (QMK at `2c745388201b633ba04036b17157669632d1740a`, the keg-only compilers on `PATH`): exits 0, no warnings.
+- `bin/keymap-parity`: exits 0 and prints nothing.
+- `git diff --exit-code origin/main -- Model01 Model100 Chrysalis_Keyboardio-Model-100_layout.json`: exits 0.
+- The plan's Caps Word and Autocorrect `grep`: exits 1.
+
+Bugs pass: the round 8 fixes hold while the fade is the active effect. `key_fade_elapsed()` now lives in `keymap.c` beside `pressed_at`, has external linkage, and `rgb_matrix_user.inc` declares it with the same signature. Its `uint16_t` return holds at most `KEY_FADE_MS` (5000). `KEY_FADE_MS` moved to `config.h`, which both `keymap.c` and the effect file see. The LED index passed in stays below `RGB_MATRIX_LED_COUNT`, the size of `pressed_at`. The clearing only runs inside the effect, so it does not cover the other effects; see the nit below.
+
+Security pass: nothing found. No new external input.
+
+Compliance: criteria 1–3 and 12 are proven by the runs above. Criteria 4–11 wait on the keyboard; the checklist is unchanged since round 8. No test was added, weakened, skipped or deleted in these commits. The branch is 26 commits ahead of its `origin` branch.
+
+- [ ] Nit: `plan.md`'s round 7 addition still says `key_fade_pressed_at()` hands the press time to the effect and that `key_fade` reads it. That function is gone: `key_fade_elapsed()` in `keymap.c` now computes the elapsed time and clears finished presses. The round 8 change has no plan line, and `KEY_FADE_MS` moved from `rgb_matrix_user.inc` to `config.h`. Add a short round 8 addition, or update the round 7 lines — `docs/changes/8-move-the-model-100-to-qmk-firmware/plan.md:87`
+- [ ] Nit: Press times are only cleared while `key_fade` runs. In any other effect, in `lights_off` (the start-up effect), or with the lights toggled off, QMK does not call the effect (`quantum/rgb_matrix/rgb_matrix.c:324`), so presses keep their times. A key pressed about 49.7 days earlier still lights for up to 5 s if the fade is switched on in that 5-second window. This is far rarer than the round 8 case. Clearing in `remember_press()` cannot help, so the choices are to accept it with a word in the comment above `key_fade_elapsed()`, or to clear finished times from a `housekeeping_task_user()` sweep — `keyboards/keyboardio/model100/keymaps/eirvandelden/keymap.c:62`
+
 <!-- cspell:words Ilib Itest rubocop Werror LSFT RSFT KEYREACTIVE -->
