@@ -47,7 +47,7 @@ Criterion 4. One pass over every key, once. `bin/keymap-parity` has already comp
 
 - [ ] Home row left: Ctrl, Alt, Cmd, Shift. Home row right: previous, volume down, volume up, next.
 - [ ] Second row right: LED previous, LED toggle (twice), LED next.
-- [ ] Third row right: brightness down, brightness up.
+- [x] Third row right: brightness down, brightness up.
 - [ ] Thumb row: mute on the second key of the thumb row in `keymap.c` (the first right thumb key).
 
 ## Palm keys reach the layers
@@ -55,7 +55,7 @@ Criterion 4. One pass over every key, once. `bin/keymap-parity` has already comp
 Criterion 5.
 
 - [ ] Hold the right palm key and press the right arrow position: the cursor moves right.
-- [ ] Hold both palm keys and press volume up: the volume goes up.
+- [x] Hold both palm keys and press volume up: the volume goes up.
 - [ ] Hold the left palm key and press the home-row key left of centre that types `!` on the numbers layer: `!` types.
 
 ## Dual-use key taps and holds
@@ -83,7 +83,7 @@ Criterion 8.
 
 Criterion 9.
 
-- [ ] LED next changes the light effect.
+- [x] LED next changes the light effect.
 - [ ] LED toggle turns the lights off and on.
 
 ## No Caps Word or Autocorrect
