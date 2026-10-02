@@ -93,12 +93,23 @@ class QmkKeymapTest < Minitest::Test
     assert_includes error.message, "qmk c2json"
   end
 
-  def test_qmk_output_of_the_wrong_shape_stops_with_a_readable_message
-    empty_json = Object.new
-    def empty_json.call(*) = "{}"
+  def test_qmk_c2json_output_without_layers_stops_with_a_readable_message
+    error = assert_raises(KeymapParity::Error) { load_with(c2json: "{}", info: File.read(QmkFixtures::INFO)) }
 
-    error = assert_raises(KeymapParity::Error) { KeymapParity::QmkKeymap.load("keymap.c", command: empty_json) }
+    assert_includes error.message, "qmk c2json printed no layers"
+  end
 
-    assert_includes error.message, "qmk"
+  def test_qmk_info_output_without_the_layout_stops_with_a_readable_message
+    error = assert_raises(KeymapParity::Error) { load_with(c2json: '{"layers": []}', info: "{}") }
+
+    assert_includes error.message, "qmk info has no LAYOUT layout"
+  end
+
+  private
+
+  def load_with(outputs)
+    command = Object.new
+    command.define_singleton_method(:call) { |*args| outputs.fetch(args[1].to_sym) }
+    KeymapParity::QmkKeymap.load("keymap.c", command: command)
   end
 end
