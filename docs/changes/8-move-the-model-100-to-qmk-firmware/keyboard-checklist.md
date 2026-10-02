@@ -86,7 +86,8 @@ Criterion 8.
 Criterion 9.
 
 - [x] LED next changes the light effect.
-- [ ] After flashing, the lights start off. The LED key cycles solid colour, breathing, rainbow wave, key-press fade and off, and nothing else.
+- [ ] After flashing, the lights start off. LED next goes to the key-press fade first, then solid colour, breathing, rainbow wave and off, and nothing else.
+- [ ] In the key-press fade, a pressed key fades out over about 5 seconds, and every key of a fast typed sentence stays lit through its fade.
 - [ ] Unplug and plug back in: the lights start off again.
 - [ ] Press LED next first (the keyboard starts in the off effect), then LED toggle turns the lights off and on.
 

@@ -76,6 +76,12 @@ Found on the keyboard (2026-10-02): typing `word?` at speed gave `ppp/`. Flow Ta
 - `keymap.c` — `get_flow_tap_term()` returns 0 for mod-taps whose modifier is Shift (`LSFT_T(DV_P)`, `RSFT_T(DV_G)`, `LSFT_T(DV_4)`, `RSFT_T(DV_7)`), and QMK's default rule (`FLOW_TAP_TERM` when both keys are flow-tap keys) for every other key. Ctrl, Alt and Cmd keep Flow Tap.
 - Proof: `qmk compile` succeeds; on the keyboard, `word?` typed at speed gives `word?`, and typing `people` still fires no modifier.
 
+Asked on the keyboard (2026-10-02): the key-press fade should be the first effect after off, and should fade over 5 seconds instead of about half a second:
+
+- `rgb_matrix_user.inc` — a custom `key_fade` effect after `lights_off`. A pressed key lights at full brightness in the current colour and fades to dark over 5 seconds, measured from QMK's per-key hit time in milliseconds. QMK cycles built-in effects first in a fixed order, then custom effects in file order, so the cycle becomes solid colour, breathing, rainbow wave, off, key-press fade, and LED next from the start-up off goes to the fade.
+- `config.h` — drop `ENABLE_RGB_MATRIX_SOLID_REACTIVE_SIMPLE`, whose fade length comes from the global speed setting that breathing and rainbow wave share. Keep `RGB_MATRIX_KEYPRESSES` for the hit times. Raise `LED_HITS_TO_REMEMBER` from 8 to 64, so keys typed during a 5-second fade are not dropped early (QMK searches the hits with an `int8_t` index, so it stays below 128).
+- Proof: `qmk compile` succeeds; on the keyboard, LED next from start-up gives the fade, a pressed key fades out over about 5 seconds, and a fast typed sentence keeps every key lit through its fade.
+
 ## Order of work
 
 0. Set up the QMK tools. On 2026-09-30 Etienne gave the implementing agent explicit permission to install the QMK tools and clone the QMK source. This overrides the intent's "I install the QMK tools on my machine myself" and playbook rule 8 for these commands only:
