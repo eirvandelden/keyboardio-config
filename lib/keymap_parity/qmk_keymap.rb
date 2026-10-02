@@ -20,8 +20,8 @@ module KeymapParity
     end
 
     def self.load(keymap_path, keyboard: "keyboardio/model100", keymap: "eirvandelden", command: Command.new)
-      layers = JSON.parse(command.call("qmk", "c2json", "-kb", keyboard, "-km", keymap, "--no-cpp", keymap_path))
-      info = JSON.parse(command.call("qmk", "info", "-kb", keyboard, "-f", "json"))
+      layers = KeymapParity.parse_json(command.call("qmk", "c2json", "-kb", keyboard, "-km", keymap, "--no-cpp", keymap_path), "qmk c2json")
+      info = KeymapParity.parse_json(command.call("qmk", "info", "-kb", keyboard, "-f", "json"), "qmk info")
       positions = info.dig("layouts", "LAYOUT", "layout").map { |key| key["matrix"] }
       new(layers.fetch("layers"), positions, File.read(keymap_path))
     end

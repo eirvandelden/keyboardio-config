@@ -1,4 +1,5 @@
 require "test_helper"
+require "tempfile"
 
 class ChrysalisLayoutTest < Minitest::Test
   include ChrysalisFixtures
@@ -73,5 +74,16 @@ class ChrysalisLayoutTest < Minitest::Test
 
   def test_key_is_addressed_by_row_and_column
     assert_equal [ :key, 4, [] ], chrysalis_layout([ 2, 3 * 16 + 15 ] => 4).key(2, 3, 15)
+  end
+
+  def test_chrysalis_file_that_is_not_json_stops_with_a_readable_message
+    Tempfile.create([ "layout", ".json" ]) do |file|
+      file.write("not json")
+      file.flush
+
+      error = assert_raises(KeymapParity::Error) { KeymapParity::ChrysalisLayout.load(file.path) }
+
+      assert_includes error.message, file.path
+    end
   end
 end

@@ -10,6 +10,10 @@ module KeymapParity
     SHIFT = 17_450...17_492
     CONSUMER = 0x4800..0x4bff
 
+    def self.load(path)
+      new(KeymapParity.parse_json(File.read(path), path))
+    end
+
     def initialize(layout)
       @layers = layout.fetch("keymaps")
     end

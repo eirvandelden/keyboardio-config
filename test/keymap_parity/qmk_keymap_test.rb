@@ -83,4 +83,13 @@ class QmkKeymapTest < Minitest::Test
 
     assert_includes error.message, "broken"
   end
+
+  def test_qmk_output_that_is_not_json_stops_with_a_readable_message
+    not_json = Object.new
+    def not_json.call(*) = "not json"
+
+    error = assert_raises(KeymapParity::Error) { KeymapParity::QmkKeymap.load("keymap.c", command: not_json) }
+
+    assert_includes error.message, "qmk c2json"
+  end
 end

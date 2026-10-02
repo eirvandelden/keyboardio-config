@@ -4,6 +4,12 @@ module KeymapParity
   MODIFIERS = %i[lctl lsft lalt lgui rctl rsft ralt rgui].freeze
   # Chrysalis layer number => QMK layer number, for the layers the QMK keymap keeps.
   LAYER_PAIRS = { 0 => 0, 1 => 1, 2 => 2, 4 => 3 }.freeze
+
+  def self.parse_json(text, source)
+    JSON.parse(text)
+  rescue JSON::ParserError => error
+    raise Error, "#{source} is not JSON: #{error.message}"
+  end
 end
 
 require "json"
