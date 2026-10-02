@@ -62,8 +62,8 @@ Criterion 5.
 
 Criterion 6.
 
-- [ ] Tap the top-row key in the `p` position: types `p`.
-- [ ] Hold it and tap `h` on the other hand: types `H`.
+- [x] Tap the top-row key in the `p` position: types `p`.
+- [x] Hold it and tap `h` on the other hand: types `H`.
 - [ ] The numbers and navigation mod-taps tap their digit or symbol and hold their modifier.
 - [ ] Hold two modifiers together (for example `Ctrl` and `Alt`), then press a key. Flow Tap's default filter leaves digits, grave and brackets without protection, so watch for stray taps.
 
@@ -77,7 +77,7 @@ Criterion 7. Do this within 200 ms: after `TAPPING_TERM`, Chordal Hold no longer
 
 Criterion 8.
 
-- [ ] Type `people` at normal speed ten times. No modifier fires from the top-row keys.
+- [x] Type `people` at normal speed ten times. No modifier fires from the top-row keys.
 
 ## Light keys
 
