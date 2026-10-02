@@ -136,4 +136,30 @@ Compliance: unchanged from round 4. Criteria 1–3 and 12 are proven by the runs
 
 No findings.
 
-<!-- cspell:words Ilib Itest rubocop Werror -->
+## Round 6 — 2026-10-02T09:28Z — c45700f
+
+Scope: `origin/main...HEAD` (44 commits, 27 files), with focus on the 9 commits since round 5 (`89263c7..c45700f`): the Spotlight key, the cut to four light effects plus off, the lights starting off, and the Shift keys taken out of Flow Tap. The working tree is clean. There is no `REVIEW.md`, so the default passes ran: Bugs, Security, Compliance.
+
+Run on this machine:
+
+- Minitest (the plan's command): 53 runs, 140 assertions, 0 failures.
+- `rubocop bin lib test`: 9 files, no offenses.
+- `clang-format --dry-run --Werror` on `keymap.c` and `config.h`: clean.
+- `cspell` on every changed file: 27 files, 0 issues.
+- `qmk compile -kb keyboardio/model100 -km eirvandelden` (QMK at `2c745388201b633ba04036b17157669632d1740a`, the keg-only compilers on `PATH`): exits 0.
+- `bin/keymap-parity`: exits 0 and prints nothing.
+- `git diff --exit-code origin/main -- Model01 Model100 Chrysalis_Keyboardio-Model-100_layout.json`: exits 0.
+- The plan's Caps Word and Autocorrect `grep`: exits 1.
+
+Bugs pass: the code changes hold. `get_flow_tap_term()` repeats QMK's weak default (`quantum/action_tapping.c:1099`) for every key except the Shift mod-taps. `QK_MOD_TAP_GET_MODS(keycode) & MOD_LSFT` matches both `LSFT_T` (`0x02`) and `RSFT_T` (`0x12`), and none of the Ctrl, Alt or Cmd mod-taps in the keymap. The generated `info_config.h` enables 29 effects, and `config.h` turns off 27 of them with `#undef`. The link map holds only `BREATHING`, `CYCLE_LEFT_RIGHT` and `SOLID_REACTIVE_SIMPLE`, plus the always-built solid colour and the custom `lights_off`, so the cycle is as the plan says. The port sets `RGB_MATRIX_DEFAULT_MODE`, but not `keyboard_post_init_*`, so the keymap's `keyboard_post_init_user()` does not collide with it. The Spotlight exception is still an exact pair, and `KC_MCTL` at that position is now reported.
+
+Security pass: nothing found. No new external input.
+
+Compliance: criteria 1–3 and 12 are proven by the runs above. Criteria 4–11 wait on the keyboard; the checklist now has 9 lines ticked. The way-back `.bin` (spec requirement 12) is still not recorded as kept. The plan's three additions of 2026-10-02 replace spec requirement 5's `KC_MCTL` exception and requirement 11's port-default lights, and the plan records both as Etienne's choice. Two tests named in `plan.md` `## Proof` were renamed, not weakened; see the nit below. No test was skipped or deleted. The branch is 9 commits ahead of its `origin` branch.
+
+- [ ] Important: The plan's proof for the Shift change is "typing `people` still fires no modifier", but the `people` tick comes from `dafa43d`, before the change in `075d6eb`. With the Shift keys out of Flow Tap, a fast opposite-hand roll that presses and releases a key while `p` or `g` is still down now becomes Shift under Permissive Hold, so the earlier tick does not cover it. Re-type `people` after the change, and add a check for fast opposite-hand rolls from both Shift keys, such as `graph` and `good` — `docs/changes/8-move-the-model-100-to-qmk-firmware/keyboard-checklist.md:80`
+- [ ] Important: The guide's "Dual-use timing" section says the keymap's `config.h` "holds exactly this" (three lines), and that Flow Tap keeps the top-row modifiers from firing while typing. `config.h` now also holds 29 light settings, and `get_flow_tap_term()` takes both Shift keys out of Flow Tap. The `word?` reason is in `plan.md` only, and the plan's doc step asks the guide to describe what the keymap uses and why. The guide also does not say that the lights start off and cycle through four effects plus off — `docs/qmk-migration.md:153`
+- [ ] Nit: `plan.md` `## Proof` still names `test_mission_control_position_is_allowed_to_differ` and `test_a_different_key_at_the_mission_control_position_is_reported`. Both were renamed for Spotlight in `comparison_test.rb`. The `bin/keymap-parity` paragraph (exception `0x2A2` against `KC_MCTL`) and the Mission Control risk also still describe the old exception. Update the names, or say in the 2026-10-02 addition that they replace these lines — `docs/changes/8-move-the-model-100-to-qmk-firmware/plan.md:163`
+- [ ] Nit: The keyboard now starts in the `lights_off` effect, so "LED toggle turns the lights off and on" shows nothing after a fresh plug-in. Say to press LED next first — `docs/changes/8-move-the-model-100-to-qmk-firmware/keyboard-checklist.md:90`
+
+<!-- cspell:words Ilib Itest rubocop Werror LSFT RSFT -->
