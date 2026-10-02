@@ -3,7 +3,7 @@ module KeymapParity
   class Comparison
     CHRYSALIS_LAYERS = 8
     UNUSED_LAYERS = [ 3, 5, 6, 7 ].freeze
-    MISSION_CONTROL = { layer: 0, position: [ 1, 6 ], chrysalis: [ :consumer, 0x2a2 ], qmk: [ :consumer, 0x29f ] }.freeze
+    SPOTLIGHT = { layer: 0, position: [ 1, 6 ], chrysalis: [ :consumer, 0x2a2 ], qmk: [ :key, 44, [ :lgui ] ] }.freeze
 
     Difference = Struct.new(:where, :chrysalis, :qmk) do
       def to_s
@@ -45,15 +45,15 @@ module KeymapParity
     def exception?(layer, position, expected, actual)
       return false unless layer.zero?
 
-      transparent_for_nothing?(expected, actual) || mission_control?(position, expected, actual)
+      transparent_for_nothing?(expected, actual) || spotlight?(position, expected, actual)
     end
 
     def transparent_for_nothing?(expected, actual)
       expected == [ :transparent ] && actual == [ :none ]
     end
 
-    def mission_control?(position, expected, actual)
-      [ position, expected, actual ] == MISSION_CONTROL.values_at(:position, :chrysalis, :qmk)
+    def spotlight?(position, expected, actual)
+      [ position, expected, actual ] == SPOTLIGHT.values_at(:position, :chrysalis, :qmk)
     end
 
     def unused_differences

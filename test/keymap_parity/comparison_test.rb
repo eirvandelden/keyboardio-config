@@ -71,22 +71,29 @@ class ComparisonTest < Minitest::Test
     assert_equal 1, differences(65_535, "KC_NO", chrysalis_layer: 1, qmk_layer: 1).size
   end
 
-  def test_mission_control_position_is_allowed_to_differ
+  def test_spotlight_position_may_send_cmd_space_for_the_chrysalis_consumer_code
     chrysalis = chrysalis_layout([ 0, 22 ] => 19_106)
-    qmk = qmk_keymap({ [ 0, 32 ] => "KC_MCTL" })
+    qmk = qmk_keymap({ [ 0, 32 ] => "LGUI(KC_SPC)" })
 
     assert_empty KeymapParity::Comparison.new(chrysalis, qmk).differences
   end
 
-  def test_a_different_key_at_the_mission_control_position_is_reported
+  def test_mission_control_at_the_spotlight_position_is_reported
+    chrysalis = chrysalis_layout([ 0, 22 ] => 19_106)
+    qmk = qmk_keymap({ [ 0, 32 ] => "KC_MCTL" })
+
+    assert_equal 1, KeymapParity::Comparison.new(chrysalis, qmk).differences.size
+  end
+
+  def test_a_different_key_at_the_spotlight_position_is_reported
     chrysalis = chrysalis_layout([ 0, 22 ] => 19_106)
     qmk = qmk_keymap({ [ 0, 32 ] => "DV_A" })
 
     assert_equal 1, KeymapParity::Comparison.new(chrysalis, qmk).differences.size
   end
 
-  def test_mission_control_against_mctl_elsewhere_is_reported
-    assert_equal 1, differences(19_106, "KC_MCTL").size
+  def test_cmd_space_against_the_spotlight_code_elsewhere_is_reported
+    assert_equal 1, differences(19_106, "LGUI(KC_SPC)").size
   end
 
   def test_unused_chrysalis_layer_that_is_not_empty_is_reported
