@@ -104,4 +104,20 @@ class ChrysalisLayoutTest < Minitest::Test
 
     assert_includes error.message, "/nonexistent/layout.json"
   end
+
+  def test_chrysalis_key_without_a_code_is_named_by_its_layer_and_position
+    layout = KeymapParity::ChrysalisLayout.new("keymaps" => [ Array.new(64) { {} } ])
+
+    error = assert_raises(KeymapParity::Error) { layout.key(0, 2, 3) }
+
+    assert_includes error.message, "layer 0 r2c3"
+  end
+
+  def test_chrysalis_layer_that_is_too_short_is_named_by_its_layer_and_position
+    layout = KeymapParity::ChrysalisLayout.new("keymaps" => [ [] ])
+
+    error = assert_raises(KeymapParity::Error) { layout.key(0, 3, 15) }
+
+    assert_includes error.message, "layer 0 r3c15"
+  end
 end
