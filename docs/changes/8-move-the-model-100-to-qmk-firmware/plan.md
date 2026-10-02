@@ -84,8 +84,9 @@ Asked on the keyboard (2026-10-02): the key-press fade should be the first effec
 
 Found in review round 7 (2026-10-02): QMK's shared hit list drops the newest presses once its oldest press passes about 65 s (`rgb_task_timers()` lowers the count without removing that entry). With 64 presses remembered, ordinary slow typing would blank the fade about once a minute:
 
-- `keymap.c` — `pre_process_record_user()` notes the time of each key press per LED (`timer_read32()`, looked up with `rgb_matrix_map_row_column_to_led()`), and `key_fade_pressed_at()` hands that time to the effect. 0 means never pressed.
-- `rgb_matrix_user.inc` — `key_fade` reads `key_fade_pressed_at()` instead of `g_last_hit_tracker`.
+- `keymap.c` — `pre_process_record_user()` notes the time of each key press per LED (`timer_read32()`, looked up with `rgb_matrix_map_row_column_to_led()`). 0 means never pressed. `key_fade_elapsed()` returns the time since that press, at most `KEY_FADE_MS`, and clears the press once its fade has finished (review round 8), so the 32-bit timer wrapping after about 49.7 days cannot light a key that was not pressed.
+- `rgb_matrix_user.inc` — `key_fade` calls `key_fade_elapsed()` instead of reading `g_last_hit_tracker`.
+- `config.h` — `KEY_FADE_MS 5000`, shared by `keymap.c` and `rgb_matrix_user.inc`.
 - `config.h` — drop `RGB_MATRIX_KEYPRESSES` and `LED_HITS_TO_REMEMBER`, which only fed the shared list.
 - Proof: `qmk compile` succeeds; on the keyboard, typing slowly for over a minute keeps every key fading out over its own 5 seconds.
 
