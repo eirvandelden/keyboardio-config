@@ -8,6 +8,7 @@ drashna
 eirvandelden
 EXLM
 Haije
+IMPLS
 Keyboardio
 keymaps
 LALT
@@ -23,6 +24,7 @@ MNXT
 MPLY
 MPRV
 NKRO
+noeeprom
 PERC
 PGDN
 PGUP

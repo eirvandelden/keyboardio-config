@@ -37,3 +37,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 char chordal_hold_handedness(keypos_t key) {
   return key.row < MATRIX_ROWS / 2 ? 'L' : 'R';
 }
+
+// Start with the lights off on every power-up, as Kaleidoscope returned to its
+// default mode, without overwriting the mode the LED key saved.
+void keyboard_post_init_user(void) {
+  rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_lights_off);
+}
