@@ -59,11 +59,23 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_
 // about 65 seconds old.
 static uint32_t pressed_at[RGB_MATRIX_LED_COUNT];
 
-uint32_t key_fade_pressed_at(uint8_t led) {
-  return pressed_at[led];
+// Milliseconds since the key at this LED was last pressed, at most KEY_FADE_MS.
+// A finished fade forgets its press, so the 32-bit timer wrapping after about
+// 49.7 days cannot light a key that was not pressed.
+uint16_t key_fade_elapsed(uint8_t led) {
+  if (pressed_at[led] == 0) {
+    return KEY_FADE_MS;
+  }
+  uint32_t elapsed = timer_elapsed32(pressed_at[led]);
+  if (elapsed >= KEY_FADE_MS) {
+    pressed_at[led] = 0;
+    return KEY_FADE_MS;
+  }
+  return elapsed;
 }
 
 static void remember_press(keypos_t key) {
+  // Sized as QMK's own caller of rgb_matrix_map_row_column_to_led() sizes it.
   uint8_t leds[LED_HITS_TO_REMEMBER];
   uint8_t count = rgb_matrix_map_row_column_to_led(key.row, key.col, leds);
   for (uint8_t i = 0; i < count; i++) {

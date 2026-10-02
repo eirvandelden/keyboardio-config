@@ -11,19 +11,7 @@ static bool lights_off(effect_params_t* params) {
   return rgb_matrix_check_finished_leds(led_max);
 }
 
-#define KEY_FADE_MS 5000
-
-uint32_t key_fade_pressed_at(uint8_t led);
-
-// Milliseconds since the key at this LED was last pressed, at most KEY_FADE_MS.
-static uint16_t key_fade_elapsed(uint8_t led) {
-  uint32_t pressed_at = key_fade_pressed_at(led);
-  if (pressed_at == 0) {
-    return KEY_FADE_MS;
-  }
-  uint32_t elapsed = timer_elapsed32(pressed_at);
-  return elapsed < KEY_FADE_MS ? elapsed : KEY_FADE_MS;
-}
+uint16_t key_fade_elapsed(uint8_t led);
 
 static bool key_fade(effect_params_t* params) {
   RGB_MATRIX_USE_LIMITS(led_min, led_max);
