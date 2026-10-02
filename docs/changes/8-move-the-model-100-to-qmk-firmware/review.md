@@ -187,4 +187,28 @@ Compliance: criteria 1–3 and 12 are proven by the runs above. Spec requirement
 - [x] Important: The guide's "Lights" section still describes the lights before the fade change. It says the keymap keeps key-press fade as `SOLID_REACTIVE_SIMPLE`, which `config.h` no longer enables. It says the LED key cycles "solid colour, breathing, rainbow wave, key-press fade and off". The plan and the checklist say off comes before the fade, and LED next from start-up goes to the fade. It does not name the custom `key_fade` effect, its 5 seconds, or `LED_HITS_TO_REMEMBER 64` — `docs/qmk-migration.md:181` fixed (Describe the custom 5-second key-press fade in the guide)
 - [x] Nit: QMK wipes the whole hit buffer when its oldest hit reaches about 65.5 s. In `rgb_task_timers()` (`quantum/rgb_matrix/rgb_matrix.c:288`), an overflowing tick decrements `count` but stays at index 0, so each frame drops one more hit, newest first. With 64 hits remembered, fewer than 64 presses in 65 s is ordinary slow typing. The keys pressed in the last 5 s then go dark at once, about once a minute. With 8 hits this needed fewer than 8 presses in 65 s. The ticked check types a fast sentence, so it does not show this. A per-LED last-press time from `timer_read32()`, kept by the keymap, would avoid the shared buffer. At the least, add a checklist line that types slowly for over a minute — `keyboards/keyboardio/model100/keymaps/eirvandelden/rgb_matrix_user.inc:17` fixed (Time the key-press fade from each key's own last press)
 
+## Round 8 — 2026-10-02T09:57Z — 225e8a5
+
+Scope: `origin/main...HEAD` (58 commits, 27 files), with focus on the 5 commits since round 7 (`f10a890..225e8a5`): the per-key press times for the key-press fade, and the guide's "Lights" section. The working tree is clean. There is no `REVIEW.md`, so the default passes ran: Bugs, Security, Compliance.
+
+Run on this machine:
+
+- Minitest (the plan's command): 53 runs, 140 assertions, 0 failures.
+- `rubocop bin lib test`: 9 files, no offenses.
+- `clang-format --dry-run --Werror` on `keymap.c` and `config.h`: clean.
+- `cspell` on every changed file: 27 files, 0 issues.
+- `qmk compile -kb keyboardio/model100 -km eirvandelden` (QMK at `2c745388201b633ba04036b17157669632d1740a`, the keg-only compilers on `PATH`): exits 0, no warnings.
+- `bin/keymap-parity`: exits 0 and prints nothing.
+- `git diff --exit-code origin/main -- Model01 Model100 Chrysalis_Keyboardio-Model-100_layout.json`: exits 0.
+- The plan's Caps Word and Autocorrect `grep`: exits 1.
+
+Bugs pass: the round 7 fixes hold. `LED_HITS_TO_REMEMBER` still defaults to 8 without `RGB_MATRIX_KEYPRESSES` (`quantum/rgb_matrix/rgb_matrix_types.h:31`, outside any `#ifdef`), so the `leds` buffer in `remember_press()` compiles and holds the at most 1 LED the Model 100 maps per key. `pre_process_record_user()` runs from `action_exec()` before `action_tapping_process()` (`quantum/action.c:133`), so each physical press is timed once, also for the tap-hold keys, and the tapping buffer's replays do not time it again. The keyboard defines no `pre_process_record_kb()` that could skip the user hook. `timer_read32() | 1` keeps a press at tick 0 apart from "never". The guide's new effect order matches QMK's: custom user effects follow the built-in ones, `lights_off` before `key_fade`.
+
+Security pass: nothing found. No new external input.
+
+Compliance: criteria 1–3 and 12 are proven by the runs above. Criteria 4–11 wait on the keyboard; the checklist has 12 lines ticked and 39 open, including the new slow-typing line. The plan's round 7 addition says to drop `RGB_MATRIX_KEYPRESSES` and `LED_HITS_TO_REMEMBER`, and `config.h` follows it. No test was added, weakened, skipped or deleted in these commits. The branch is 23 commits ahead of its `origin` branch.
+
+- [ ] Nit: A key's press time is never cleared, and `timer_elapsed32()` wraps after 2^32 ms, about 49.7 days. A key last pressed about 49.7 days ago, with the keyboard powered all that time, gets an elapsed time near 0 again and lights for 5 s with no press. Rare keys, such as the palm or LED keys, are the likely ones. Fix: when `key_fade_elapsed()` reaches `KEY_FADE_MS`, set the press time back to 0, for example through a `key_fade_forget(led)` beside `key_fade_pressed_at()` — `keyboards/keyboardio/model100/keymaps/eirvandelden/rgb_matrix_user.inc:24`
+- [ ] Nit: `remember_press()` sizes its buffer with `LED_HITS_TO_REMEMBER`, the size of the shared hit list that the comment above it says the fade no longer uses. QMK does the same in `process_rgb_matrix()`, so it is correct, but it reads as if the shared list is still involved. A local `#define` with a one-line reason, or a short comment, makes the intent clear — `keyboards/keyboardio/model100/keymaps/eirvandelden/keymap.c:67`
+
 <!-- cspell:words Ilib Itest rubocop Werror LSFT RSFT KEYREACTIVE -->
