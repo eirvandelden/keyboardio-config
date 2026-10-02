@@ -5,7 +5,7 @@
 #define FLOW_TAP_TERM 150
 
 // The LED key cycles solid colour (always built in), breathing, rainbow wave,
-// key-press fade and the keymap's own lights-off effect.
+// and the keymap's own lights-off and 5-second key-press fade effects.
 #undef ENABLE_RGB_MATRIX_ALPHAS_MODS
 #undef ENABLE_RGB_MATRIX_GRADIENT_UP_DOWN
 #undef ENABLE_RGB_MATRIX_GRADIENT_LEFT_RIGHT
@@ -33,5 +33,6 @@
 #undef ENABLE_RGB_MATRIX_PIXEL_RAIN
 #undef ENABLE_RGB_MATRIX_PIXEL_FLOW
 #undef ENABLE_RGB_MATRIX_PIXEL_FRACTAL
-#define ENABLE_RGB_MATRIX_SOLID_REACTIVE_SIMPLE
 #define RGB_MATRIX_KEYPRESSES
+// Remember enough key presses to keep a fast typed sentence lit for 5 seconds.
+#define LED_HITS_TO_REMEMBER 64
