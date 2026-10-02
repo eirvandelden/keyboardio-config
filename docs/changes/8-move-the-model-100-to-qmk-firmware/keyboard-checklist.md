@@ -18,7 +18,7 @@ Criterion 4. One pass over every key, once. `bin/keymap-parity` has already comp
 - [ ] Left top letter row: `'` `,` `.` `p` `y`. Each of the first four also works as a modifier (see "Dual-use key taps and holds").
 - [ ] Left home row: `a o e u i`.
 - [ ] Left bottom row: `;` `q` `j` `k` `x`.
-- [ ] Left inner column, top to bottom: LED next, Mission Control, Ctrl+S.
+- [ ] Left inner column, top to bottom: LED next, Spotlight (Cmd+Space), Ctrl+S.
 - [ ] Right inner column, top to bottom: previous track, play/pause, next track.
 - [ ] Right top letter row: `f g c r l`, then `=` at the outer edge. `g c r l` also work as modifiers.
 - [ ] Right home row: `d h t n s`, then `-` at the outer edge.

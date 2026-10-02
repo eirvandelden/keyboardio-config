@@ -137,7 +137,7 @@ Key positions do not carry over by number. Kaleidoscope's left hand runs `r0c0`â
 ### Keys that need a decision
 
 - **Top-left `Prog` key**: transparent in Chrysalis, so `XXXXXXX` here. Holding it while plugging in still starts the bootloader. That is handled by the bootloader, not the keymap.
-- **Left inner middle key**: Chrysalis sends consumer usage `0x2A2` and labels it "Mission Control". QMK's `KC_MCTL` sends `0x29F` ("show all windows"). Try `KC_MCTL` first. If the Mac does something different from today, send `0x2A2` from `process_record_user` with `host_consumer_send(0x2A2)`.
+- **Left inner middle key**: Chrysalis sends consumer usage `0x2A2` and labels it "Mission Control", but on the Mac it opened Spotlight. QMK's `KC_MCTL` sends `0x29F` and opens Mission Control, which was wrong. The keymap sends Cmd+Space (`LGUI(KC_SPC)`), Spotlight's own shortcut.
 - **Both-palms layer**: done here as `MO(MEDIA)` on the opposite palm key of layers 1 and 2, as in Chrysalis. QMK's Tri Layer feature (`TRI_LAYER_ENABLE = yes`, `TL_LOWR`/`TL_UPPR`) does the same thing without the extra keys.
 - **The `LEDEffect` toggle appears twice** on the media layer (`r1c12`, `r1c13`). Copied as is.
 - **Mod-tap tap keys must be basic keycodes.** Every dual-use key in my layout already is.
@@ -146,7 +146,7 @@ Key positions do not carry over by number. Kaleidoscope's left hand runs `r0c0`â
 
 The keymap is `keyboards/keyboardio/model100/keymaps/eirvandelden/keymap.c`. It started as a script-generated draft, and `bin/keymap-parity` found no difference from the Chrysalis export. That file is the one copy of the keymap. Its `LAYOUT` grids follow the port's physical key order.
 
-`bin/keymap-parity` reads the Chrysalis JSON, runs `qmk c2json --no-cpp` and `qmk info`, and lists every key whose meaning differs. Two differences are accepted: the Mission Control key (`KC_MCTL` instead of `0x2A2`) and transparent keys on the base layer (no key). It can be removed together with Chrysalis.
+`bin/keymap-parity` reads the Chrysalis JSON, runs `qmk c2json --no-cpp` and `qmk info`, and lists every key whose meaning differs. Two differences are accepted: the Spotlight key (Cmd+Space instead of `0x2A2`) and transparent keys on the base layer (no key). It can be removed together with Chrysalis.
 
 ## Dual-use timing
 
