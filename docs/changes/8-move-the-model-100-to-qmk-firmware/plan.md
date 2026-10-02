@@ -82,6 +82,13 @@ Asked on the keyboard (2026-10-02): the key-press fade should be the first effec
 - `config.h` — drop `ENABLE_RGB_MATRIX_SOLID_REACTIVE_SIMPLE`, whose fade length comes from the global speed setting that breathing and rainbow wave share. Keep `RGB_MATRIX_KEYPRESSES` for the hit times. Raise `LED_HITS_TO_REMEMBER` from 8 to 64, so keys typed during a 5-second fade are not dropped early (QMK searches the hits with an `int8_t` index, so it stays below 128).
 - Proof: `qmk compile` succeeds; on the keyboard, LED next from start-up gives the fade, a pressed key fades out over about 5 seconds, and a fast typed sentence keeps every key lit through its fade.
 
+Found in review round 7 (2026-10-02): QMK's shared hit list drops the newest presses once its oldest press passes about 65 s (`rgb_task_timers()` lowers the count without removing that entry). With 64 presses remembered, ordinary slow typing would blank the fade about once a minute:
+
+- `keymap.c` — `pre_process_record_user()` notes the time of each key press per LED (`timer_read32()`, looked up with `rgb_matrix_map_row_column_to_led()`), and `key_fade_pressed_at()` hands that time to the effect. 0 means never pressed.
+- `rgb_matrix_user.inc` — `key_fade` reads `key_fade_pressed_at()` instead of `g_last_hit_tracker`.
+- `config.h` — drop `RGB_MATRIX_KEYPRESSES` and `LED_HITS_TO_REMEMBER`, which only fed the shared list.
+- Proof: `qmk compile` succeeds; on the keyboard, typing slowly for over a minute keeps every key fading out over its own 5 seconds.
+
 ## Order of work
 
 0. Set up the QMK tools. On 2026-09-30 Etienne gave the implementing agent explicit permission to install the QMK tools and clone the QMK source. This overrides the intent's "I install the QMK tools on my machine myself" and playbook rule 8 for these commands only:
