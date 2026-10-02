@@ -77,8 +77,9 @@ Criterion 7. Do this within 200 ms: after `TAPPING_TERM`, Chordal Hold no longer
 
 Criterion 8.
 
-- [x] Type `people` at normal speed ten times. No modifier fires from the top-row keys.
+- [x] Type `people` at normal speed ten times. No modifier fires from the top-row keys. Typed again on 2026-10-02 after the Shift keys left Flow Tap: still no modifier.
 - [x] Type `word?` at normal speed ten times: each gives `word?`, not `ppp/`.
+- [ ] Type `graph good` at speed ten times. Each Shift key (`g` on the right, `p` on the left) rolls into the other hand without capitals: no `GRAPH`, `grapH` or `gOod`.
 
 ## Light keys
 
@@ -87,7 +88,7 @@ Criterion 9.
 - [x] LED next changes the light effect.
 - [ ] After flashing, the lights start off. The LED key cycles solid colour, breathing, rainbow wave, key-press fade and off, and nothing else.
 - [ ] Unplug and plug back in: the lights start off again.
-- [ ] LED toggle turns the lights off and on.
+- [ ] Press LED next first (the keyboard starts in the off effect), then LED toggle turns the lights off and on.
 
 ## No Caps Word or Autocorrect
 
