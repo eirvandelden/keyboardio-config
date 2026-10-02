@@ -35,7 +35,7 @@ The bootloader (Keyboardio's DAPBoot) stays untouched. QMK is flashed after it, 
 
 Do this before flashing QMK.
 
-1. Build the current Kaleidoscope firmware and keep the `.bin` outside this repository. Build it from commit `1ee038c` of this repository (the last one before the availability light, which was never flashed), against my fork at `~/Developer/Kaleidoscope`, in the Arduino IDE. Suggested place for the file: `~/Documents/keyboardio/model100-kaleidoscope-1ee038c.bin`. It was not built yet on 2026-10-01. Build it before the first QMK flash.
+1. Build the current Kaleidoscope firmware and keep the `.bin` outside this repository. Build it from commit `1ee038c` of this repository (the last one before the availability light, which was never flashed), against my fork at `~/Developer/Kaleidoscope`, in the Arduino IDE. It was built on 2026-10-02 with the `arduino-cli` that comes with the Arduino IDE (`keyboardio:gd32` 1.99.9, whose `Kaleidoscope` and `Kaleidoscope-Qukeys` libraries link to the fork) and kept as `~/Documents/keyboardio/model100-kaleidoscope-1ee038c.bin` (SHA-256 `c6d9e223bac5d8d183056e1691886d66d6a6c2b95a57fbef0075c8e17874ebd1`). It contains the opposite-hands rule and no availability light.
 2. Confirm `Chrysalis_Keyboardio-Model-100_layout.json` in this repository matches what is on the keyboard. Export again from Chrysalis if in doubt, and commit it.
 3. Expect the saved settings area to be overwritten. QMK and Kaleidoscope both keep settings in the same flash. After going back, import the layout JSON in Chrysalis again.
 
@@ -150,7 +150,7 @@ The keymap is `keyboards/keyboardio/model100/keymaps/eirvandelden/keymap.c`. It 
 
 ## Dual-use timing
 
-The keymap uses QMK's default timing plus three features. This was a choice on 2026-09-30, instead of porting the Qukeys values. The keymap's `config.h` holds exactly this:
+The keymap uses QMK's default timing plus three features. This was a choice on 2026-09-30, instead of porting the Qukeys values. The timing lines in the keymap's `config.h` are:
 
 ```c
 #define PERMISSIVE_HOLD
@@ -160,19 +160,25 @@ The keymap uses QMK's default timing plus three features. This was a choice on 2
 
 At the pinned commit `TAPPING_TERM` is 200 ms and `QUICK_TAP_TERM` equals it. Permissive Hold makes a mod-tap a hold when another key is pressed and released inside it. QMK's documentation says Chordal Hold is meant to be used with Permissive Hold or Hold On Other Key Press, and without one of them it adds nothing for opposite-hand chords. Flow Tap at 150 ms (the value QMK's documentation suggests) keeps top-row modifiers from firing while typing. Flow Tap is not a copy of the Qukeys minimum prior interval: its default filter skips digits, grave and brackets, and it is off during some modifier chords and while a tap-hold is undecided.
 
+The Shift keys (`p` and `g` on the base layer, `4` and `7` on the numbers layer) are left out of Flow Tap by `get_flow_tap_term()` in `keymap.c`. With Flow Tap on them, typing `word?` at speed gave `ppp/`: the Shift key followed a letter within 150 ms, so Flow Tap settled it as `p`, and macOS key repeat typed more `p` while it was held. Shift right after a letter is ordinary typing, so the Shift keys decide by hold time and Permissive Hold, and Flow Tap keeps guarding Ctrl, Alt and Cmd.
+
 The Qukeys values in `Model100.ino`, kept for reference:
 
 | Kaleidoscope | Value | Used in QMK |
 |---|---|---|
 | `setHoldTimeout` | 250 | no, QMK default `TAPPING_TERM` (200) |
 | `setEnableOppositeHandsRule(true)` | on | `CHORDAL_HOLD` |
-| `setMinimumPriorInterval` | 150 | `FLOW_TAP_TERM 150` |
+| `setMinimumPriorInterval` | 150 | `FLOW_TAP_TERM 150`, except the Shift keys |
 | `setOverlapThreshold` | 60% | `PERMISSIVE_HOLD`, nearest, not identical |
 | `setMinimumHoldTime` | 100 | none |
 | `setMaxIntervalForTapRepeat` | 300 | no, QMK default `QUICK_TAP_TERM` (200) |
 | `setKeyscanInterval(2)` | 2 ms | the port already sets the scanner chips' interval to 2 in `matrix.c` (`matrix_init_custom()`) |
 
 `"debounce": 0` in the port's `keyboard.json` is a separate QMK setting and stays. If doubled letters appear, try `#define DEBOUNCE 5` with `DEBOUNCE_TYPE = sym_eager_pk` in `rules.mk`, and record the doubled letters as a finding in `docs/changes/8-move-the-model-100-to-qmk-firmware/keyboard-checklist.md`.
+
+## Lights
+
+The port enables 29 light effects. The keymap keeps breathing, rainbow wave (`CYCLE_LEFT_RIGHT`) and key-press fade (`SOLID_REACTIVE_SIMPLE`), with `#undef` lines in `config.h`. QMK's solid colour effect is always built in. A custom `lights_off` effect in `rgb_matrix_user.inc` paints every key black, so the LED key cycles solid colour, breathing, rainbow wave, key-press fade and off. `keyboard_post_init_user()` starts in `lights_off` on every power-up without saving it, as Kaleidoscope returned to its default mode. The rainbow trail, per-layer colours, and lights turning off when idle or asleep are [#11](https://github.com/eirvandelden/keyboardio-config/issues/11).
 
 ## Opposite-hands rule: Chordal Hold
 
