@@ -162,4 +162,29 @@ Compliance: criteria 1–3 and 12 are proven by the runs above. Criteria 4–11 
 - [x] Nit: `plan.md` `## Proof` still names `test_mission_control_position_is_allowed_to_differ` and `test_a_different_key_at_the_mission_control_position_is_reported`. Both were renamed for Spotlight in `comparison_test.rb`. The `bin/keymap-parity` paragraph (exception `0x2A2` against `KC_MCTL`) and the Mission Control risk also still describe the old exception. Update the names, or say in the 2026-10-02 addition that they replace these lines — `docs/changes/8-move-the-model-100-to-qmk-firmware/plan.md:163` fixed (Point the plan's Proof at the Spotlight test names)
 - [x] Nit: The keyboard now starts in the `lights_off` effect, so "LED toggle turns the lights off and on" shows nothing after a fresh plug-in. Say to press LED next first — `docs/changes/8-move-the-model-100-to-qmk-firmware/keyboard-checklist.md:90` fixed (Check fast opposite-hand rolls from the Shift keys and the toggle from a fresh start)
 
-<!-- cspell:words Ilib Itest rubocop Werror LSFT RSFT -->
+## Round 7 — 2026-10-02T09:53Z — f10a890
+
+Scope: `origin/main...HEAD` (53 commits, 27 files), with focus on the 8 commits since round 6 (`f9675da..f10a890`): the round 6 fixes, the way-back `.bin` recorded as kept, and the custom 5-second `key_fade` effect. The working tree is clean. There is no `REVIEW.md`, so the default passes ran: Bugs, Security, Compliance.
+
+Run on this machine:
+
+- Minitest (the plan's command): 53 runs, 140 assertions, 0 failures.
+- `rubocop bin lib test`: 9 files, no offenses.
+- `clang-format --dry-run --Werror` on `keymap.c` and `config.h`: clean.
+- `cspell` on every changed file: 27 files, 0 issues.
+- `qmk compile -kb keyboardio/model100 -km eirvandelden` (QMK at `2c745388201b633ba04036b17157669632d1740a`, the keg-only compilers on `PATH`): exits 0.
+- `bin/keymap-parity`: exits 0 and prints nothing.
+- `git diff --exit-code origin/main -- Model01 Model100 Chrysalis_Keyboardio-Model-100_layout.json`: exits 0.
+- The plan's Caps Word and Autocorrect `grep`: exits 1.
+- `shasum -a 256 ~/Documents/keyboardio/model100-kaleidoscope-1ee038c.bin` matches the SHA-256 in the guide.
+
+Bugs pass: the round 6 fixes hold. `RGB_MATRIX_KEYPRESSES` alone defines `RGB_MATRIX_KEYREACTIVE_ENABLED` (`quantum/rgb_matrix/rgb_matrix_types.h:26`), so `g_last_hit_tracker` still exists without `SOLID_REACTIVE_SIMPLE`. `key_fade_elapsed()` walks the hits newest first, so a key pressed twice uses its last press. The `int8_t` index is safe for 64 hits, and the brightness sum stays in 0–255. One QMK behaviour shortens the fade; see the nit below.
+
+Security pass: nothing found. No new external input.
+
+Compliance: criteria 1–3 and 12 are proven by the runs above. Spec requirement 12 now holds: the way-back `.bin` exists, and its hash matches the guide. Criteria 4–11 wait on the keyboard; the checklist has 12 lines ticked and 38 open. The plan's 2026-10-02 fade addition says to drop `SOLID_REACTIVE_SIMPLE`, and `config.h` follows it. No test was added, weakened, skipped or deleted in these commits. The branch is 18 commits ahead of its `origin` branch.
+
+- [ ] Important: The guide's "Lights" section still describes the lights before the fade change. It says the keymap keeps key-press fade as `SOLID_REACTIVE_SIMPLE`, which `config.h` no longer enables. It says the LED key cycles "solid colour, breathing, rainbow wave, key-press fade and off". The plan and the checklist say off comes before the fade, and LED next from start-up goes to the fade. It does not name the custom `key_fade` effect, its 5 seconds, or `LED_HITS_TO_REMEMBER 64` — `docs/qmk-migration.md:181`
+- [ ] Nit: QMK wipes the whole hit buffer when its oldest hit reaches about 65.5 s. In `rgb_task_timers()` (`quantum/rgb_matrix/rgb_matrix.c:288`), an overflowing tick decrements `count` but stays at index 0, so each frame drops one more hit, newest first. With 64 hits remembered, fewer than 64 presses in 65 s is ordinary slow typing. The keys pressed in the last 5 s then go dark at once, about once a minute. With 8 hits this needed fewer than 8 presses in 65 s. The ticked check types a fast sentence, so it does not show this. A per-LED last-press time from `timer_read32()`, kept by the keymap, would avoid the shared buffer. At the least, add a checklist line that types slowly for over a minute — `keyboards/keyboardio/model100/keymaps/eirvandelden/rgb_matrix_user.inc:17`
+
+<!-- cspell:words Ilib Itest rubocop Werror LSFT RSFT KEYREACTIVE -->
