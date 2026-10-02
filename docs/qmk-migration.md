@@ -178,7 +178,11 @@ The Qukeys values in `Model100.ino`, kept for reference:
 
 ## Lights
 
-The port enables 29 light effects. The keymap keeps breathing, rainbow wave (`CYCLE_LEFT_RIGHT`) and key-press fade (`SOLID_REACTIVE_SIMPLE`), with `#undef` lines in `config.h`. QMK's solid colour effect is always built in. A custom `lights_off` effect in `rgb_matrix_user.inc` paints every key black, so the LED key cycles solid colour, breathing, rainbow wave, key-press fade and off. `keyboard_post_init_user()` starts in `lights_off` on every power-up without saving it, as Kaleidoscope returned to its default mode. The rainbow trail, per-layer colours, and lights turning off when idle or asleep are [#11](https://github.com/eirvandelden/keyboardio-config/issues/11).
+The port enables 29 light effects. The keymap keeps breathing and rainbow wave (`CYCLE_LEFT_RIGHT`), with `#undef` lines in `config.h`; QMK's solid colour effect is always built in. `rgb_matrix_user.inc` adds two custom effects after them. `lights_off` paints every key black. `key_fade` lights a pressed key in the current colour and fades it to dark over 5 seconds. The LED key cycles off, key-press fade, solid colour, breathing, rainbow wave, and back to off. `keyboard_post_init_user()` starts in `lights_off` on every power-up without saving it, as Kaleidoscope returned to its default mode, so the first LED next goes to the fade.
+
+The fade uses its own record of when each key was last pressed (`pre_process_record_user()` in `keymap.c`), not QMK's built-in key-press fade or its shared list of recent presses. The built-in fade lasts about half a second, set by the speed that breathing and rainbow wave share, and comes before off in the cycle. The shared list drops the newest presses once its oldest is about 65 seconds old, which would blank a 5-second fade during slow typing.
+
+The rainbow trail, per-layer colours, and lights turning off when idle or asleep are [#11](https://github.com/eirvandelden/keyboardio-config/issues/11).
 
 ## Opposite-hands rule: Chordal Hold
 
