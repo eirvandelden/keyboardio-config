@@ -89,4 +89,28 @@ Compliance: unchanged from round 2. Criteria 1–3 and 12 are proven by the runs
 - [x] Nit: The round 2 fix covers only invalid JSON. Valid JSON of the wrong shape still ends in a raw backtrace instead of a `keymap-parity:` message: `info.dig(...)` returns `nil` and `.map` raises `NoMethodError`, `fetch("layers")` and `fetch("keymaps")` raise `KeyError`, and a missing Chrysalis file raises `Errno::ENOENT` — `lib/keymap_parity/qmk_keymap.rb:25` → fixed (Stop the parity check with a readable message on input of the wrong shape)
 - [x] Nit: The new refusal for a layer key that targets a dropped layer names the target but not where the key is. On the unused layers 3, 5, 6 and 7 it also stops the script before `Comparison#unused` can list the key as "expected an empty layer" with its position. Adding the layer and `r<row>c<col>` to the message would make it actionable — `lib/keymap_parity/chrysalis_layout.rb:60` → fixed (Name the layer and position of a Chrysalis key the check cannot decode)
 
+## Round 4 — 2026-10-02T08:02Z — 2122c03
+
+Scope: `origin/main...HEAD` (30 commits, 26 files), with focus on the 3 commits since round 3 (`3bb6910..2122c03`). The working tree is clean. There is no `REVIEW.md`, so the default passes ran: Bugs, Security, Compliance.
+
+Run on this machine:
+
+- Minitest (the plan's command): 49 runs, 130 assertions, 0 failures.
+- `rubocop bin lib test`: 9 files, no offenses.
+- `clang-format --dry-run --Werror` on `keymap.c` and `config.h`: clean.
+- `cspell` on every changed file: 26 files, 0 issues.
+- `qmk compile -kb keyboardio/model100 -km eirvandelden` (QMK at `2c745388201b633ba04036b17157669632d1740a`, the keg-only compilers on `PATH`): exits 0.
+- `bin/keymap-parity`: exits 0 and prints nothing.
+- `git diff --exit-code origin/main -- Model01 Model100 Chrysalis_Keyboardio-Model-100_layout.json`: exits 0.
+- The plan's Caps Word and Autocorrect `grep`: exits 1.
+
+Bugs pass: the round 3 fixes hold. A missing Chrysalis file, a Chrysalis export without `keymaps`, `qmk info` without a `LAYOUT` layout and `qmk c2json` without `layers` now stop with a `keymap-parity:` message. A key the check cannot decode now names its Chrysalis layer and `r<row>c<col>`. A layer key on an unused layer still stops the script instead of being listed by `Comparison#unused`; with the position in the message, that is actionable, as round 3 asked.
+
+Security pass: nothing found. No new external input.
+
+Compliance: unchanged from round 3. Criteria 1–3 and 12 are proven by the runs above. Criteria 4–11 wait on the keyboard, and `keyboard-checklist.md` has nothing ticked. All 30 tests named in `plan.md` `## Proof` still exist, and the 4 new tests only add. No test was weakened, skipped or deleted.
+
+- [ ] Nit: `test_qmk_output_of_the_wrong_shape_stops_with_a_readable_message` returns `{}` for both `qmk` commands, so the `qmk info` check fires first and the new `"qmk c2json printed no layers"` branch never runs in a test. The assertion (`"qmk"`) is also loose enough to pass on either message. Give `qmk info` the fixture output and assert on `"layers"` — `test/keymap_parity/qmk_keymap_test.rb:96`
+- [ ] Nit: Two wrong shapes in the Chrysalis export still end in a raw backtrace: a key without `"code"` raises `KeyError`, and a layer with fewer than 64 keys raises `IndexError` (both checked in this review). `ChrysalisLayout#key` rescues only `KeymapParity::Error`. A real Chrysalis export does not have these shapes, so this is low value — `lib/keymap_parity/chrysalis_layout.rb:28`
+
 <!-- cspell:words Ilib Itest rubocop Werror -->
