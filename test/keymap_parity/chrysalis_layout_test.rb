@@ -92,4 +92,16 @@ class ChrysalisLayoutTest < Minitest::Test
       assert_includes error.message, file.path
     end
   end
+
+  def test_chrysalis_json_without_keymaps_is_refused
+    error = assert_raises(KeymapParity::Error) { KeymapParity::ChrysalisLayout.new({}) }
+
+    assert_includes error.message, "keymaps"
+  end
+
+  def test_missing_chrysalis_file_stops_with_a_readable_message
+    error = assert_raises(KeymapParity::Error) { KeymapParity::ChrysalisLayout.load("/nonexistent/layout.json") }
+
+    assert_includes error.message, "/nonexistent/layout.json"
+  end
 end

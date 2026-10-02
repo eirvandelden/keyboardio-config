@@ -12,10 +12,12 @@ module KeymapParity
 
     def self.load(path)
       new(KeymapParity.parse_json(File.read(path), path))
+    rescue Errno::ENOENT
+      raise Error, "#{path} does not exist"
     end
 
     def initialize(layout)
-      @layers = layout.fetch("keymaps")
+      @layers = layout.fetch("keymaps") { raise Error, "the Chrysalis layout has no keymaps" }
     end
 
     def layer_count

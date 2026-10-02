@@ -92,4 +92,13 @@ class QmkKeymapTest < Minitest::Test
 
     assert_includes error.message, "qmk c2json"
   end
+
+  def test_qmk_output_of_the_wrong_shape_stops_with_a_readable_message
+    empty_json = Object.new
+    def empty_json.call(*) = "{}"
+
+    error = assert_raises(KeymapParity::Error) { KeymapParity::QmkKeymap.load("keymap.c", command: empty_json) }
+
+    assert_includes error.message, "qmk"
+  end
 end
