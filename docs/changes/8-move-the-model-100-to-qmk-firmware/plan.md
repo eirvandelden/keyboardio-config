@@ -158,6 +158,6 @@ Per changed file, the unit tests expected, named as behaviour:
   - `test_real_chrysalis_export_against_real_c2json_output_reports_no_differences` (written in step 6, once the full keymap exists; uses the fixture saved there and the committed Chrysalis JSON)
 - `keymap.c`, `config.h`, `rules.mk`, `.clang-format`: no unit tests; proven by compile (criterion 1), `bin/keymap-parity` (criterion 2) and the checklist.
 
-Test setup: `ruby -Ilib -e 'Dir["test/**/*_test.rb"].each { require File.expand_path(it) }'` (or one file: `ruby -Ilib test/keymap_parity/comparison_test.rb`). Tests build tiny Chrysalis and QMK layer fragments inline and inject the `qmk` command runner, so they run without QMK installed. One integration test reads the real `c2json` and `qmk info` output saved in step 3. The acceptance runs (`qmk compile`, `bin/keymap-parity`) need step 0 done first.
+Test setup: `ruby -Ilib -Itest -e 'Dir["test/**/*_test.rb"].each { require File.expand_path(it) }'` (or one file: `ruby -Ilib -Itest test/keymap_parity/comparison_test.rb`). Tests build tiny Chrysalis and QMK layer fragments inline and inject the `qmk` command runner, so they run without QMK installed. One integration test reads the real `c2json` and `qmk info` output saved in step 3. The acceptance runs (`qmk compile`, `bin/keymap-parity`) need step 0 done first.
 
-<!-- cspell:words rubocop RuboCop keypos TRNS worktree Werror hjson Ilib -->
+<!-- cspell:words rubocop RuboCop keypos TRNS worktree Werror hjson Ilib Itest -->
