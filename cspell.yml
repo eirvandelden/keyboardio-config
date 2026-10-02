@@ -3,15 +3,11 @@ version: "0.2"
 language: en,en-GB
 
 dictionaryDefinitions:
-  - name: user-dictionary
-    path: ~/.config/cspell/user-dictionary.txt
-    addWords: true
   - name: project-dictionary
     path: ./project-dictionary.txt
     addWords: true
 
 dictionaries:
-  - user-dictionary
   - project-dictionary
   - en-gb
   - cpp
