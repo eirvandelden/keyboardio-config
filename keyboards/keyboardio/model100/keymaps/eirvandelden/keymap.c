@@ -54,6 +54,30 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_
   return 0;
 }
 
+// The time each LED's key was last pressed, for the key-press fade; 0 is never.
+// Kept here because QMK's shared hit list drops presses once its oldest is
+// about 65 seconds old.
+static uint32_t pressed_at[RGB_MATRIX_LED_COUNT];
+
+uint32_t key_fade_pressed_at(uint8_t led) {
+  return pressed_at[led];
+}
+
+static void remember_press(keypos_t key) {
+  uint8_t leds[LED_HITS_TO_REMEMBER];
+  uint8_t count = rgb_matrix_map_row_column_to_led(key.row, key.col, leds);
+  for (uint8_t i = 0; i < count; i++) {
+    pressed_at[leds[i]] = timer_read32() | 1;
+  }
+}
+
+bool pre_process_record_user(uint16_t keycode, keyrecord_t* record) {
+  if (record->event.pressed) {
+    remember_press(record->event.key);
+  }
+  return true;
+}
+
 // Start with the lights off on every power-up, as Kaleidoscope returned to its
 // default mode, without overwriting the mode the LED key saved.
 void keyboard_post_init_user(void) {

@@ -13,15 +13,16 @@ static bool lights_off(effect_params_t* params) {
 
 #define KEY_FADE_MS 5000
 
+uint32_t key_fade_pressed_at(uint8_t led);
+
 // Milliseconds since the key at this LED was last pressed, at most KEY_FADE_MS.
 static uint16_t key_fade_elapsed(uint8_t led) {
-  for (int8_t j = g_last_hit_tracker.count - 1; j >= 0; j--) {
-    if (g_last_hit_tracker.index[j] == led) {
-      uint16_t tick = g_last_hit_tracker.tick[j];
-      return tick < KEY_FADE_MS ? tick : KEY_FADE_MS;
-    }
+  uint32_t pressed_at = key_fade_pressed_at(led);
+  if (pressed_at == 0) {
+    return KEY_FADE_MS;
   }
-  return KEY_FADE_MS;
+  uint32_t elapsed = timer_elapsed32(pressed_at);
+  return elapsed < KEY_FADE_MS ? elapsed : KEY_FADE_MS;
 }
 
 static bool key_fade(effect_params_t* params) {

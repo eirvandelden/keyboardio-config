@@ -33,6 +33,3 @@
 #undef ENABLE_RGB_MATRIX_PIXEL_RAIN
 #undef ENABLE_RGB_MATRIX_PIXEL_FLOW
 #undef ENABLE_RGB_MATRIX_PIXEL_FRACTAL
-#define RGB_MATRIX_KEYPRESSES
-// Remember enough key presses to keep a fast typed sentence lit for 5 seconds.
-#define LED_HITS_TO_REMEMBER 64
