@@ -9,7 +9,6 @@ module KeymapParity
     LOCK = 17_408...17_450
     SHIFT = 17_450...17_492
     CONSUMER = 0x4800..0x4bff
-    MEDIA_TARGET = { 4 => 3 }.freeze
 
     def initialize(layout)
       @layers = layout.fetch("keymaps")
@@ -54,7 +53,7 @@ module KeymapParity
     end
 
     def target(layer)
-      MEDIA_TARGET.fetch(layer, layer)
+      LAYER_PAIRS.fetch(layer) { raise Error, "layer key targets layer #{layer}, which the QMK keymap does not have" }
     end
   end
 end

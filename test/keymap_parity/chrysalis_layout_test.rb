@@ -59,6 +59,12 @@ class ChrysalisLayoutTest < Minitest::Test
     assert_equal [ :layer, :momentary, 3 ], chrysalis_layout([ 0, 0 ] => 17_454).key(0, 0, 0)
   end
 
+  def test_layer_key_that_targets_an_empty_chrysalis_layer_is_refused
+    error = assert_raises(KeymapParity::Error) { chrysalis_layout([ 0, 0 ] => 17_453).key(0, 0, 0) }
+
+    assert_includes error.message, "layer 3"
+  end
+
   def test_unknown_chrysalis_code_stops_with_that_code
     error = assert_raises(KeymapParity::Error) { chrysalis_layout([ 0, 0 ] => 12_345).key(0, 0, 0) }
 

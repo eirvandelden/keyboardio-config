@@ -2,7 +2,6 @@ module KeymapParity
   # Walks every layer and position and lists where Chrysalis and QMK disagree.
   class Comparison
     CHRYSALIS_LAYERS = 8
-    LAYER_PAIRS = { 0 => 0, 1 => 1, 2 => 2, 4 => 3 }.freeze
     UNUSED_LAYERS = [ 3, 5, 6, 7 ].freeze
     MISSION_CONTROL = { layer: 0, position: [ 1, 6 ], chrysalis: [ :consumer, 0x2a2 ], qmk: [ :consumer, 0x29f ] }.freeze
 
