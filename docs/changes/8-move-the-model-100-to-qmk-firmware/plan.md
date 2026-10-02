@@ -69,7 +69,7 @@ Found on the keyboard (2026-10-02): the left inner middle key opened Spotlight o
 - `lib/keymap_parity/comparison.rb` — the accepted exception at base layer `r1c6` becomes Chrysalis `0x2A2` against QMK Cmd+Space, named for Spotlight. `KC_MCTL` at that position is now a difference.
 - `docs/qmk-migration.md` and `keyboard-checklist.md` — name the key Spotlight and drop the `KC_MCTL` advice.
 - Tests first in `test/keymap_parity/comparison_test.rb`: Cmd+Space at the Spotlight position is allowed, `KC_MCTL` there is reported, and Cmd+Space elsewhere against `0x2A2` is reported.
-- This replaces the intent's and spec's `KC_MCTL` constraint, which rested on the Chrysalis label rather than on what the key did.
+- This replaces the intent's and spec's `KC_MCTL` constraint, which rested on the Chrysalis label rather than on what the key did, and every `KC_MCTL` exception in this plan's file list and Proof.
 
 Found on the keyboard (2026-10-02): typing `word?` at speed gave `ppp/`. Flow Tap settled the left Shift key (`p`) as a tap because it came within 150 ms of a letter, and macOS key repeat then typed `p` while the key was held. With a pause first, `word?` types correctly. Etienne chose to take the Shift keys out of Flow Tap:
 
@@ -114,7 +114,7 @@ Etienne, on the keyboard, in parallel with the agent's steps; the agent does not
 - **Timing feels different.** The keyboard decides tap or hold after 200 ms instead of 250 ms, and a tap then hold repeats the tap only within 200 ms instead of 300 ms. Permissive Hold still makes a quick opposite-hand chord (hold `p`, tap `h`, release `p`) type `H`. Flow Tap is not a copy of Kaleidoscope's minimum prior interval: QMK's default filter skips digits, grave and brackets, and Flow Tap is off during some modifier chords and while a tap-hold is undecided. The week of daily use is the test; tuning goes to a later change.
 - **This branch stays open for the week of typing** (criterion 11). The pull request is opened at step 10 and merges only after the week passes without a reason to go back.
 - **Doubled letters.** The port already sets the scanner interval to 2, like the sketch. No debounce algorithm is added; doubled letters seen on the keyboard are recorded as a finding.
-- **Mission Control does something different on the Mac.** Accepted by the spec (`KC_MCTL`). If it is unusable, that is a finding for a later change.
+- **Mission Control does something different on the Mac.** Accepted by the spec (`KC_MCTL`). It did: the key opened Spotlight on Kaleidoscope. Replaced on 2026-10-02 by Cmd+Space; see the Spotlight addition above.
 - **Lights stay on while the Mac sleeps.** Accepted until #11.
 - **Settings area overwritten.** QMK and Kaleidoscope share the flash area for settings. After going back, the Chrysalis layout import restores it; that is part of criterion 10.
 - Rejected: a hand-typed `chordal_hold_layout` table (64 entries to get wrong, and it must follow `LAYOUT` order); the handedness callback derives it from the matrix row. Rejected: Tri Layer for the media layer (spec keeps the palm-key `MO(MEDIA)`). Rejected: generating `keymap.c` from the Chrysalis JSON (spec: written by hand, JSON is being retired).
@@ -160,7 +160,7 @@ Per changed file, the unit tests expected, named as behaviour:
   - `test_led_keys_match_rm_next_rm_prev_rm_togg`
   - `test_transparent_on_upper_layer_matches_transparent`
   - `test_transparent_on_base_layer_matches_no_key`
-  - `test_mission_control_position_is_allowed_to_differ`
+  - `test_spotlight_position_may_send_cmd_space_for_the_chrysalis_consumer_code` (was `test_mission_control_position_is_allowed_to_differ`, renamed on 2026-10-02)
   - `test_unused_chrysalis_layer_that_is_not_empty_is_reported`
   - `test_unknown_qmk_name_stops_with_that_name`
   - `test_report_lists_layer_and_kaleidoscope_position_for_each_difference`
@@ -169,7 +169,7 @@ Per changed file, the unit tests expected, named as behaviour:
   - `test_mission_control_is_decoded_from_its_code_not_its_category`
   - `test_layer_key_target_four_is_renumbered_to_three`
   - `test_unknown_chrysalis_code_stops_with_that_code`
-  - `test_a_different_key_at_the_mission_control_position_is_reported`
+  - `test_a_different_key_at_the_spotlight_position_is_reported` (was `test_a_different_key_at_the_mission_control_position_is_reported`, renamed on 2026-10-02)
   - `test_a_base_layer_key_that_is_not_transparent_against_no_key_is_reported`
   - `test_qmk_keymap_without_exactly_four_layers_is_refused`
   - `test_qmk_layer_without_sixty_four_keys_is_refused`
