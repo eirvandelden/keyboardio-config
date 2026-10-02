@@ -131,7 +131,7 @@ The Mac does Dvorak in software. The keyboard sends QWERTY positions. QMK ships 
 | `LEDEffectNext`, `Previous`, `Toggle` | `RM_NEXT`, `RM_PREV`, `RM_TOGG` |
 | transparent | `_______` on upper layers, `XXXXXXX` (nothing) on the base layer |
 
-Key positions do not carry over by number. Kaleidoscope's left hand runs `r0c0`–`r3c7` and the right `r0c8`–`r3c15`. QMK's matrix is 8×8 with the columns mirrored: left `[row][7 - col]`, right `[row + 4][15 - col]`. QMK's `LAYOUT()` macro then lists keys in physical order. The inner-column keys (LED/Any, Tab/Enter, the lower "butterfly" keys) sit at the end of rows 1–3. The thumb keys come last, alternating left and right, then the two palm keys.
+Key positions do not carry over by number. Kaleidoscope's left hand runs `r0c0`–`r3c7` and the right `r0c8`–`r3c15`. QMK's matrix is 8×8 with the columns mirrored: left `[row][7 - col]`, right `[row + 4][15 - col]`. QMK's `LAYOUT()` macro then lists keys in physical order. The inner-column keys (LED/Any, Tab/Enter, the lower "butterfly" keys) sit in the middle of rows 1–3, as the 7th and 8th of each row's 14 keys, between the two halves. The thumb keys come last, alternating left and right, then the two palm keys.
 
 ### Keys that need a decision
 
@@ -185,7 +185,7 @@ char chordal_hold_handedness(keypos_t key) {
 }
 ```
 
-Matrix rows 0–3 are the left half and rows 4–7 the right half, the same split as Kaleidoscope columns 0–7 against 8–15, thumbs and palm keys included. Returning `'*'` for a key lets it chord with either hand. That is worth trying for the thumb and palm keys, so a left mod plus left-thumb `Enter` or `Space` still counts as a hold. Kaleidoscope's version could not do this.
+Matrix rows 0–3 are the left half and rows 4–7 the right half, the same split as Kaleidoscope columns 0–7 against 8–15, thumbs and palm keys included. Returning `'*'` for a key lets it chord with either hand. That is worth trying for the thumb and palm keys, so a left mod plus left-thumb `Enter` or `Tab` still counts as a hold. Kaleidoscope's version could not do this.
 
 After `TAPPING_TERM` (200 ms), Chordal Hold no longer stops a hold, so a slow same-hand chord is a hold.
 
