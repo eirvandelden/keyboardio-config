@@ -78,6 +78,7 @@ Criterion 7. Do this within 200 ms: after `TAPPING_TERM`, Chordal Hold no longer
 Criterion 8.
 
 - [x] Type `people` at normal speed ten times. No modifier fires from the top-row keys.
+- [ ] Type `word?` at normal speed ten times: each gives `word?`, not `ppp/`.
 
 ## Light keys
 
