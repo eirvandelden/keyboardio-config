@@ -1,0 +1,14 @@
+$schema: https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
+version: "0.2"
+language: en,en-GB
+
+dictionaryDefinitions:
+  - name: project-dictionary
+    path: ./project-dictionary.txt
+    addWords: true
+
+dictionaries:
+  - project-dictionary
+  - en-gb
+  - cpp
+  - softwareTerms
