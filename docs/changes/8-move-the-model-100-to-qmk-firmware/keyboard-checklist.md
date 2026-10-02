@@ -117,4 +117,7 @@ Criterion 11.
 
 Doubled letters, accidental modifiers or any other regression go here, one line each, with the date. For each one, decide whether it blocks the change. A fix that needs new work gets a new plan step first.
 
-- 
+- 2026-10-02, better: doubled key presses, especially with modifiers, which happened on Kaleidoscope, have not appeared on QMK on the first day. Keep watching through the week. Not blocking.
+- 2026-10-02, fixed: the left inner middle key opened Mission Control instead of Spotlight. It now sends Cmd+Space. Not blocking.
+- 2026-10-02, fixed: `word?` typed at speed gave `ppp/` because Flow Tap settled the Shift key as a tap. The Shift keys are now out of Flow Tap. Not blocking.
+- 2026-10-02, fixed: the port's 29 light effects were too many, and the key-press fade disappeared too quickly. The LED key now cycles off, a 5-second key-press fade, solid colour, breathing and rainbow wave. Not blocking.
