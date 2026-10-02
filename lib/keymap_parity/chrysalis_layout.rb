@@ -24,6 +24,8 @@ module KeymapParity
 
     def key(layer, row, col)
       describe(@layers.fetch(layer).fetch(row * KEYS_PER_ROW + col).fetch("code"))
+    rescue Error => error
+      raise Error, "Chrysalis layer #{layer} r#{row}c#{col}: #{error.message}"
     end
 
     private

@@ -66,6 +66,12 @@ class ChrysalisLayoutTest < Minitest::Test
     assert_includes error.message, "layer 3"
   end
 
+  def test_a_key_that_cannot_be_decoded_is_named_by_its_layer_and_position
+    error = assert_raises(KeymapParity::Error) { chrysalis_layout([ 5, 22 ] => 17_453).key(5, 1, 6) }
+
+    assert_includes error.message, "layer 5 r1c6"
+  end
+
   def test_unknown_chrysalis_code_stops_with_that_code
     error = assert_raises(KeymapParity::Error) { chrysalis_layout([ 0, 0 ] => 12_345).key(0, 0, 0) }
 
