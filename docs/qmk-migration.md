@@ -39,7 +39,7 @@ Do this before flashing QMK.
 2. Confirm `Chrysalis_Keyboardio-Model-100_layout.json` in this repository matches what is on the keyboard. Export again from Chrysalis if in doubt, and commit it.
 3. Expect the saved settings area to be overwritten. QMK and Kaleidoscope both keep settings in the same flash. After going back, import the layout JSON in Chrysalis again.
 
-Going back: hold `Prog`, plug in, and flash the kept `.bin` with `dfu-util -d 3496:0005 -a 0 -R -D <file>.bin` (the command QMK runs in step 4), or upload from the Arduino IDE as before. Then import `Chrysalis_Keyboardio-Model-100_layout.json` in Chrysalis, which restores the settings area QMK overwrote.
+Going back: hold `Prog`, plug in, and flash the kept `.bin` with `dfu-util -d 3496:0005 -a 0 -R -D ~/Documents/keyboardio/model100-kaleidoscope-1ee038c.bin` (the command QMK runs in step 4), or upload from the Arduino IDE as before. Then import `Chrysalis_Keyboardio-Model-100_layout.json` in Chrysalis, which restores the settings area QMK overwrote.
 
 ## Step 2: install the QMK tools
 
