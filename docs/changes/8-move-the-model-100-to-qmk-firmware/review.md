@@ -65,4 +65,28 @@ All 30 tests named in `plan.md` `## Proof` exist. No existing test was weakened,
 
 1 more nit not listed (`qmk.json` has no trailing newline). → fixed (End qmk.json with a newline)
 
+## Round 3 — 2026-10-02T07:58Z — 3bb6910
+
+Scope: `origin/main...HEAD` (26 commits, 26 files), with focus on the 9 commits since round 2 (`d9dfc69..3bb6910`). The working tree is clean. There is no `REVIEW.md`, so the default passes ran: Bugs, Security, Compliance.
+
+Run on this machine:
+
+- Minitest (the plan's command, now with `-Itest`): 45 runs, 118 assertions, 0 failures.
+- `rubocop bin lib test`: 9 files, no offenses.
+- `clang-format --dry-run --Werror` on `keymap.c` and `config.h`: clean.
+- `cspell` on every changed file: 0 issues.
+- `qmk compile -kb keyboardio/model100 -km eirvandelden` (QMK at `2c745388201b633ba04036b17157669632d1740a`, the keg-only compilers on `PATH`): exits 0.
+- `bin/keymap-parity`: exits 0 and prints nothing.
+- `git diff --exit-code origin/main -- Model01 Model100 Chrysalis_Keyboardio-Model-100_layout.json`: exits 0.
+- The plan's Caps Word and Autocorrect `grep`: exits 1.
+
+Bugs pass: the round 2 fixes hold. `LAYER_PAIRS` moved to the namespace and now drives both the layer pairing in `Comparison` and the target renumbering in `ChrysalisLayout`, so a layer key that targets dropped layer 3 stops the script. `KeymapParity.parse_json` turns non-JSON from both `qmk` commands and the Chrysalis file into `KeymapParity::Error`. `qmk.json` ends with a newline. `cspell.yml` reads only the project dictionary. The doc corrections for the inner-column keys and the left thumb match `keymap.c`. `brew trust` exists in this Homebrew (`brew help trust`); the trust commands in the guide were not run in this review.
+
+Security pass: nothing found. No new external input beyond the JSON handling above.
+
+Compliance: unchanged from round 2. Criteria 1–3 and 12 are proven by the runs above. Criteria 4–11 wait on the keyboard, and `keyboard-checklist.md` has nothing ticked. The way-back `.bin` (spec requirement 12) does not exist yet at `~/Documents/keyboardio/`; the guide says so, and it is required only before the first QMK flash. All 30 tests named in `plan.md` `## Proof` still exist, and the 3 new tests only add. No test was weakened, skipped or deleted.
+
+- [ ] Nit: The round 2 fix covers only invalid JSON. Valid JSON of the wrong shape still ends in a raw backtrace instead of a `keymap-parity:` message: `info.dig(...)` returns `nil` and `.map` raises `NoMethodError`, `fetch("layers")` and `fetch("keymaps")` raise `KeyError`, and a missing Chrysalis file raises `Errno::ENOENT` — `lib/keymap_parity/qmk_keymap.rb:25` →
+- [ ] Nit: The new refusal for a layer key that targets a dropped layer names the target but not where the key is. On the unused layers 3, 5, 6 and 7 it also stops the script before `Comparison#unused` can list the key as "expected an empty layer" with its position. Adding the layer and `r<row>c<col>` to the message would make it actionable — `lib/keymap_parity/chrysalis_layout.rb:60` →
+
 <!-- cspell:words Ilib Itest rubocop Werror -->
