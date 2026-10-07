@@ -90,6 +90,14 @@ Found in review round 7 (2026-10-02): QMK's shared hit list drops the newest pre
 - `config.h` — drop `RGB_MATRIX_KEYPRESSES` and `LED_HITS_TO_REMEMBER`, which only fed the shared list.
 - Proof: `qmk compile` succeeds; on the keyboard, typing slowly for over a minute keeps every key fading out over its own 5 seconds.
 
+Decided on 2026-10-05, merged 2026-10-07: Etienne kept QMK after three days of use, because it works and the doubled key presses from Kaleidoscope are gone, and chose to merge before every success item was met. Open at merge, and recorded as open in `keyboard-checklist.md`:
+
+- The way back to Kaleidoscope (criterion 10) was not tried. The `.bin` is kept and its SHA-256 matches the guide. Trying it once becomes a prerequisite of the issue that removes Kaleidoscope from this repository, because after that removal the `.bin` is the whole way back.
+- The week of normal work (criterion 11) ended after three days.
+- The every-key pass (criterion 4) has the left-hand base layer, the dual-use, palm-key, media and light checks it ticks; the other key lines were not each ticked.
+- The light cycle from start-up, the toggle, Ctrl+S and the slow-typing fade check are not ticked.
+- `cspell` left the toolchain on 2026-10-07, so `cspell.yml` and `project-dictionary.txt` are removed from this branch and the cspell steps below no longer apply.
+
 ## Order of work
 
 0. Set up the QMK tools. On 2026-09-30 Etienne gave the implementing agent explicit permission to install the QMK tools and clone the QMK source. This overrides the intent's "I install the QMK tools on my machine myself" and playbook rule 8 for these commands only:
@@ -126,7 +134,7 @@ Etienne, on the keyboard, in parallel with the agent's steps; the agent does not
 - **`qmk c2json` misreads the keymap.** It parses C with a limited parser. Step 3 runs it on the real skeleton before any decoder exists, and the script always uses `--no-cpp`. If it still fails, stop and ask; do not rewrite the keymap into `keymap.json`.
 - **The parity script's QMK name table is wrong or incomplete.** The script holds its own table from QMK names to key codes for the names this keymap uses. A wrong entry would hide a real difference. Mitigated by unit tests per name group, by stopping on unknown names, and by criterion 4 (every key checked on the keyboard once). Rejected: reading QMK's own `data/constants/keycodes/*.hjson`, because Ruby's standard library cannot parse hjson.
 - **Timing feels different.** The keyboard decides tap or hold after 200 ms instead of 250 ms, and a tap then hold repeats the tap only within 200 ms instead of 300 ms. Permissive Hold still makes a quick opposite-hand chord (hold `p`, tap `h`, release `p`) type `H`. Flow Tap is not a copy of Kaleidoscope's minimum prior interval: QMK's default filter skips digits, grave and brackets, and Flow Tap is off during some modifier chords and while a tap-hold is undecided. The week of daily use is the test; tuning goes to a later change.
-- **This branch stays open for the week of typing** (criterion 11). The pull request is opened at step 10 and merges only after the week passes without a reason to go back.
+- **This branch stays open for the week of typing** (criterion 11). The pull request is opened at step 10 and merges only after the week passes without a reason to go back. Overtaken on 2026-10-05: Etienne kept QMK after three days; see the addition above.
 - **Doubled letters.** The port already sets the scanner interval to 2, like the sketch. No debounce algorithm is added; doubled letters seen on the keyboard are recorded as a finding.
 - **Mission Control does something different on the Mac.** Accepted by the spec (`KC_MCTL`). It did: the key opened Spotlight on Kaleidoscope. Replaced on 2026-10-02 by Cmd+Space; see the Spotlight addition above.
 - **Lights stay on while the Mac sleeps.** Accepted until #11.
@@ -195,4 +203,3 @@ Per changed file, the unit tests expected, named as behaviour:
 
 Test setup: `ruby -Ilib -Itest -e 'Dir["test/**/*_test.rb"].each { require File.expand_path(it) }'` (or one file: `ruby -Ilib -Itest test/keymap_parity/comparison_test.rb`). Tests build tiny Chrysalis and QMK layer fragments inline and inject the `qmk` command runner, so they run without QMK installed. One integration test reads the real `c2json` and `qmk info` output saved in step 3. The acceptance runs (`qmk compile`, `bin/keymap-parity`) need step 0 done first.
 
-<!-- cspell:words rubocop RuboCop keypos TRNS worktree Werror hjson Ilib Itest noeeprom -->
