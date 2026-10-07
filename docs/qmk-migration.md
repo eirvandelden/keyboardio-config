@@ -2,7 +2,7 @@
 
 This guide covers three things: how to put QMK on the Model 100, how to carry the current Chrysalis layout over, and which QMK features are worth opting into.
 
-Written 2026-09-25, updated 2026-10-01. The keymap in `keyboards/keyboardio/model100/keymaps/eirvandelden/keymap.c` compiles against the pinned QMK commit, and `bin/keymap-parity` finds no difference from `Chrysalis_Keyboardio-Model-100_layout.json` apart from the two accepted exceptions. Nothing has been flashed yet.
+Written 2026-09-25, updated 2026-10-07. The keymap in `keyboards/keyboardio/model100/keymaps/eirvandelden/keymap.c` was first flashed on 2026-10-02 and kept on 2026-10-05: it is the firmware on the keyboard. `bin/keymap-parity` finds no difference from `Chrysalis_Keyboardio-Model-100_layout.json` apart from the two accepted exceptions.
 
 ## Where QMK support stands
 
@@ -295,7 +295,7 @@ Autocorrect keeps a list of recent keys and compares it with a list of typos bui
 
 1. Step 1: keep a way back.
 2. Steps 2–4: tools, the author's branch, flash the default keymap, and type on it.
-3. Step 5: the userspace files, keymap and timing settings are in this repository and compile (done 2026-10-01). Flash with `qmk flash -kb keyboardio/model100 -km eirvandelden`.
+3. Step 5: the userspace files, keymap and timing settings are in this repository and compile (done 2026-10-01), were flashed on 2026-10-02, and were kept on 2026-10-05. Flash with `qmk flash -kb keyboardio/model100 -km eirvandelden`.
 4. Work through `docs/changes/8-move-the-model-100-to-qmk-firmware/keyboard-checklist.md` and compare against the Kaleidoscope feel.
 5. Per-layer colours, then anything from the opt-in list.
 6. When the pull request merges, move `user.qmk_home` to upstream QMK and retire the `Model100/` sketch and the Kaleidoscope fork.
