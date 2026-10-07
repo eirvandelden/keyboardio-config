@@ -236,3 +236,39 @@ Compliance: criteria 1–3 and 12 are proven by the runs above. Criteria 4–11 
 - [x] Nit: Press times are only cleared while `key_fade` runs. In any other effect, in `lights_off` (the start-up effect), or with the lights toggled off, QMK does not call the effect (`quantum/rgb_matrix/rgb_matrix.c:324`), so presses keep their times. A key pressed about 49.7 days earlier still lights for up to 5 s if the fade is switched on in that 5-second window. This is far rarer than the round 8 case. Clearing in `remember_press()` cannot help, so the choices are to accept it with a word in the comment above `key_fade_elapsed()`, or to clear finished times from a `housekeeping_task_user()` sweep — `keyboards/keyboardio/model100/keymaps/eirvandelden/keymap.c:62` dismissed: it needs about 49.7 days of uptime and switching into the fade inside one 5-second window, and the result is one key glowing for up to 5 seconds; not worth extra code in a keymap
 
 <!-- cspell:words Ilib Itest rubocop Werror LSFT RSFT KEYREACTIVE -->
+
+## Round 10 — 2026-10-07T19:27Z — 6203a2b
+
+Scope: `origin/main...HEAD` (66 commits, 27 files), with focus on the 3 commits since round 9 (`873a937..6203a2b`): round 9 closed, the plan's fade lines updated, the checklist's first-day findings, and the 2026-10-05 decision to keep QMK. No code changed since round 9. The working tree is clean. There is no `REVIEW.md` or `REVIEW.local.md`, so the default passes ran: Bugs, Security, Compliance.
+
+Run on this machine:
+
+- Minitest (the plan's command): 53 runs, 140 assertions, 0 failures.
+- `rubocop bin lib test`: 9 files, no offenses.
+- `clang-format --dry-run --Werror` on `keymap.c` and `config.h`: clean.
+- `qmk compile -kb keyboardio/model100 -km eirvandelden` (QMK at `2c745388201b633ba04036b17157669632d1740a`, the keg-only compilers on `PATH`): exits 0.
+- `bin/keymap-parity`: exits 0 and prints nothing.
+- `git diff --exit-code origin/main -- Model01 Model100 Chrysalis_Keyboardio-Model-100_layout.json`: exits 0.
+- The plan's Caps Word and Autocorrect `grep`: exits 1.
+- `shasum -a 256 ~/Documents/keyboardio/model100-kaleidoscope-1ee038c.bin` matches the SHA-256 in the guide.
+- `cspell` did not run. It left the toolchain on 2026-10-07 (dotfiles #180) and is not on `PATH`. See the nit below.
+
+Bugs pass: nothing found. No code changed since round 9. The plan's round 7 addition now describes `key_fade_elapsed()`, the clearing of finished presses and `KEY_FADE_MS` in `config.h` as built. The checklist's light finding matches the effect order from start-up: off, key-press fade, solid colour, breathing, rainbow wave.
+
+Security pass: nothing found. No new external input.
+
+Compliance, `intent.md`'s Success list against the proof:
+
+| Success item | Proof |
+|---|---|
+| Every key on every layer checked once | not met: "Every key, every layer" has 5 of 28 lines ticked |
+| A week of normal work without a reason to go back | not met: cut short after three days (2026-10-02 to 2026-10-05), recorded in the checklist only |
+| Going back to Kaleidoscope tried once and works | not met: all 3 "Way back tried" lines are open, recorded as "Not tried" |
+| The firmware builds on my machine from this repository | met: `qmk compile` above |
+
+Spec criteria 1–3 and 12 hold, as the runs above prove. The checklist has 16 lines ticked and 35 open. No test was added, weakened, skipped or deleted in these commits. The branch is 2 commits ahead of its `origin` branch, and pull request #12 is open.
+
+- [ ] Important: The way back to Kaleidoscope was never tried. `intent.md` lists it as a Success item, and spec criterion 10 and the plan's Proof 10 require it. The checklist now says "Not tried", but `intent.md` and `plan.md` still require it. Earlier changes of course (QMK default timing, Spotlight) got a dated plan addition with Etienne's choice; this one did not. After the follow-up branch removes the sketch and the Chrysalis layout, an untried `.bin` is the whole way back. Try it once, or record in a dated plan addition that criterion 10 is waived and why — `docs/changes/8-move-the-model-100-to-qmk-firmware/keyboard-checklist.md:110` →
+- [ ] Important: Two more Success items are not met, and only the checklist says so. The week of normal work ended after three days, and the every-key pass (criterion 4) has 5 of 28 lines ticked. The plan's risk line still says the pull request "merges only after the week passes", and Proof 4 and 11 point at open boxes. The on-keyboard proofs of two later plan additions are also open: the light cycle from start-up (the findings call it fixed, but its box is open) and the round 7 slow-typing fade check. Those changes have only compile proof so far. Finish the open checks, or add a dated plan addition that records the 2026-10-05 decision and the criteria it waives — `docs/changes/8-move-the-model-100-to-qmk-firmware/plan.md:129` →
+- [ ] Nit: The guide's status line still says "updated 2026-10-01" and "Nothing has been flashed yet". The keymap was flashed on 2026-10-02 and kept on 2026-10-05. The plan's doc step asks the guide to say what has been built and flashed. Step 3 of "Proposed order of work" also stops at "compile" — `docs/qmk-migration.md:5` →
+- [ ] Nit: The branch still adds `cspell.yml` and `project-dictionary.txt`, but cspell left the toolchain on 2026-10-07 and nothing runs it. The plan's step 10 and its `project-dictionary.txt` line also still name cspell. Remove both files before the merge, with a plan line for it. The `cspell:words` comments in `plan.md` and this file leave with the change folder — `cspell.yml:1` →
