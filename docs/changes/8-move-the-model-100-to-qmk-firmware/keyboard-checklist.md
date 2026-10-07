@@ -14,10 +14,10 @@ Criterion 4. One pass over every key, once. `bin/keymap-parity` has already comp
 
 - [ ] Top row, left to right: Prog key sends nothing, then `1 2 3 4 5` on the left half and `6 7 8 9 0` on the right half.
 - [ ] Top-right key locks and unlocks the numbers layer.
-- [ ] Left outer column, top to bottom: `{`, `(`, `[`.
-- [ ] Left top letter row: `'` `,` `.` `p` `y`. Each of the first four also works as a modifier (see "Dual-use key taps and holds").
-- [ ] Left home row: `a o e u i`.
-- [ ] Left bottom row: `;` `q` `j` `k` `x`.
+- [x] Left outer column, top to bottom: `{`, `(`, `[`.
+- [x] Left top letter row: `'` `,` `.` `p` `y`. Each of the first four also works as a modifier (see "Dual-use key taps and holds").
+- [x] Left home row: `a o e u i`.
+- [x] Left bottom row: `;` `q` `j` `k` `x`.
 - [ ] Left inner column, top to bottom: LED next, Spotlight (Cmd+Space), Ctrl+S.
 - [ ] Right inner column, top to bottom: previous track, play/pause, next track.
 - [ ] Right top letter row: `f g c r l`, then `=` at the outer edge. `g c r l` also work as modifiers.
@@ -107,11 +107,15 @@ Criterion 10.
 - [ ] Import `Chrysalis_Keyboardio-Model-100_layout.json` in Chrysalis. The keyboard behaves as before.
 - [ ] Flash QMK again.
 
+Not tried: QMK was kept on 2026-10-05 before the way back was needed. The `.bin` is kept, and its SHA-256 matches the guide.
+
 ## A week of work
 
 Criterion 11.
 
-- [ ] A week of normal work on QMK without a reason to go back. Date started: ______
+- [ ] A week of normal work on QMK without a reason to go back. Date started: 2026-10-02
+
+Cut short: on 2026-10-05 Etienne decided to keep QMK after three days, because it works and the doubled key presses from Kaleidoscope are gone. The unticked checks above were not all tried before that decision.
 
 ## Findings
 
