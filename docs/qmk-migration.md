@@ -2,7 +2,7 @@
 
 This guide covers three things: how to put QMK on the Model 100, how to carry the current Chrysalis layout over, and which QMK features are worth opting into.
 
-Written 2026-09-25, updated 2026-10-07. The keymap in `keyboards/keyboardio/model100/keymaps/eirvandelden/keymap.c` was first flashed on 2026-10-02 and kept on 2026-10-05: it is the firmware on the keyboard. `bin/keymap-parity` finds no difference from `Chrysalis_Keyboardio-Model-100_layout.json` apart from the two accepted exceptions.
+Written 2026-09-25, updated 2026-10-08. The keymap in `keyboards/keyboardio/model100/keymaps/eirvandelden/keymap.c` was first flashed on 2026-10-02 and kept on 2026-10-05: it is the firmware on the keyboard. `bin/keymap-parity` finds no difference from `Chrysalis_Keyboardio-Model-100_layout.json` apart from the two accepted exceptions.
 
 ## Where QMK support stands
 
@@ -39,7 +39,7 @@ Do this before flashing QMK.
 2. Confirm `Chrysalis_Keyboardio-Model-100_layout.json` in this repository matches what is on the keyboard. Export again from Chrysalis if in doubt, and commit it.
 3. Expect the saved settings area to be overwritten. QMK and Kaleidoscope both keep settings in the same flash. After going back, import the layout JSON in Chrysalis again.
 
-Going back: hold `Prog`, plug in, and flash the kept `.bin` with `dfu-util -d 3496:0005 -a 0 -R -D ~/Documents/keyboardio/model100-kaleidoscope-1ee038c.bin` (the command QMK runs in step 4), or upload from the Arduino IDE as before. Then import `Chrysalis_Keyboardio-Model-100_layout.json` in Chrysalis, which restores the settings area QMK overwrote.
+Going back (not tried yet): hold `Prog`, plug in, and flash the kept `.bin` with `dfu-util -d 3496:0005 -a 0 -R -D ~/Documents/keyboardio/model100-kaleidoscope-1ee038c.bin` (the command QMK runs in step 4), or upload from the Arduino IDE as before. Then import `Chrysalis_Keyboardio-Model-100_layout.json` in Chrysalis, which restores the settings area QMK overwrote.
 
 ## Step 2: install the QMK tools
 
@@ -296,6 +296,6 @@ Autocorrect keeps a list of recent keys and compares it with a list of typos bui
 1. Step 1: keep a way back.
 2. Steps 2–4: tools, the author's branch, flash the default keymap, and type on it.
 3. Step 5: the userspace files, keymap and timing settings are in this repository and compile (done 2026-10-01), were flashed on 2026-10-02, and were kept on 2026-10-05. Flash with `qmk flash -kb keyboardio/model100 -km eirvandelden`.
-4. Check every key and the dual-use timing on the keyboard against the Kaleidoscope feel (done 2026-10-02 to 2026-10-05, in pull request #12).
+4. Check every key and the dual-use timing on the keyboard against the Kaleidoscope feel. Partly done between 2026-10-02 and 2026-10-05 (pull request #12): the left-hand base layer, the dual-use taps, holds and same-hand rolls, the palm keys, volume and brightness. QMK was kept before every key was checked.
 5. Per-layer colours, then anything from the opt-in list.
-6. When the pull request merges, move `user.qmk_home` to upstream QMK and retire the `Model100/` sketch and the Kaleidoscope fork.
+6. When qmk/qmk_firmware#26397 merges, move `user.qmk_home` to upstream QMK. Removing the `Model100/` sketch, the Chrysalis files and the Kaleidoscope fork is #13, which does not wait for that.
