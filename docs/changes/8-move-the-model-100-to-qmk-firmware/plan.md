@@ -90,9 +90,9 @@ Found in review round 7 (2026-10-02): QMK's shared hit list drops the newest pre
 - `config.h` — drop `RGB_MATRIX_KEYPRESSES` and `LED_HITS_TO_REMEMBER`, which only fed the shared list.
 - Proof: `qmk compile` succeeds; on the keyboard, typing slowly for over a minute keeps every key fading out over its own 5 seconds.
 
-Decided on 2026-10-05, merged 2026-10-07: Etienne kept QMK after three days of use, because it works and the doubled key presses from Kaleidoscope are gone, and chose to merge before every success item was met. Open at merge, and recorded as open in `keyboard-checklist.md`:
+Decided on 2026-10-05, chosen to merge on 2026-10-07: Etienne kept QMK after three days of use, because it works and the doubled key presses from Kaleidoscope are gone, and chose to merge before every success item was met. Open at merge, and recorded as open in `keyboard-checklist.md`:
 
-- The way back to Kaleidoscope (criterion 10) was not tried. The `.bin` is kept and its SHA-256 matches the guide. Trying it once becomes a prerequisite of the issue that removes Kaleidoscope from this repository, because after that removal the `.bin` is the whole way back.
+- The way back to Kaleidoscope (criterion 10) was not tried. The `.bin` is kept and its SHA-256 matches the guide. Etienne chose not to try it, and not to make trying it part of removing Kaleidoscope (#13).
 - The week of normal work (criterion 11) ended after three days.
 - The every-key pass (criterion 4) has the left-hand base layer, the dual-use, palm-key, media and light checks it ticks; the other key lines were not each ticked.
 - The light cycle from start-up, the toggle, Ctrl+S and the slow-typing fade check are not ticked.
