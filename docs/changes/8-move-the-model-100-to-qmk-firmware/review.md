@@ -379,3 +379,36 @@ Round 12's Important finding and three nits hold, apart from the list detail bel
 
 - [x] Nit: Step 4's list of what was checked names more than `keyboard-checklist.md` ticks. "The left-hand base layer": only the outer column and the three letter rows are ticked; the digits, the inner column (LED next, Spotlight, Ctrl+S) and the left thumb keys are open. Round 12 suggested that wording, and it was too broad. "The palm keys": 1 of 3 palm checks is ticked (both palms with volume up); the single-palm checks for the right arrow and `!` are open. "The dual-use taps, holds": only the top-row `p` key is ticked; the numbers and navigation mod-taps are open. After `finish` this line is the only record. For example: "the left-hand letter keys and outer column, the top-row dual-use keys and same-hand rolls, both palm keys together for volume, and brightness" — `docs/qmk-migration.md:299` → fixed (Name exactly what was checked, and what #13 covers, in the guide)
 - [x] Nit: Step 6 says removing "the Kaleidoscope fork is #13". Issue #13 does not remove the fork: it lists the fork under "Decide", archive it or leave it, because it holds keyboardio/Kaleidoscope#1539. Say "deciding what happens to the Kaleidoscope fork", or leave the fork out of the sentence — `docs/qmk-migration.md:301` → fixed (Name exactly what was checked, and what #13 covers, in the guide)
+
+## Round 14 — 2026-10-08T08:38Z — 468b025
+
+Scope: `origin/main...HEAD` (81 commits, 25 files), with focus on the 3 commits since round 13 (`b9126af..468b025`): round 13 written and closed, and the guide's order-of-work steps 4 and 6 reworded. No code changed since round 9 (`git diff 873a937..HEAD -- keyboards lib bin test qmk.json .clang-format .gitignore` is empty). The working tree is clean. There is no `REVIEW.md` or `REVIEW.local.md`, so the default passes ran: Bugs, Security, Compliance.
+
+Run on this machine:
+
+- Minitest (the plan's command): 53 runs, 140 assertions, 0 failures.
+- `rubocop bin lib test`: 9 files, no offenses.
+- `clang-format --dry-run --Werror` on `keymap.c` and `config.h`: clean.
+- `qmk compile -kb keyboardio/model100 -km eirvandelden` (QMK at `2c745388201b633ba04036b17157669632d1740a`, the keg-only compilers on `PATH`): exits 0. The working tree stays clean after it.
+- `bin/keymap-parity`: exits 0 and prints nothing.
+- `git diff --exit-code origin/main -- Model01 Model100 Chrysalis_Keyboardio-Model-100_layout.json`: exits 0.
+- The plan's Caps Word and Autocorrect `grep`: exits 1.
+- `shasum -a 256 ~/Documents/keyboardio/model100-kaleidoscope-1ee038c.bin` matches the SHA-256 in the guide.
+- `gh pr view 12`: open, not merged. `gh issue view 13` was read for step 6.
+
+Bugs pass: nothing found in the code, which is the same as in round 9. In the guide, step 6 now matches #13: it removes the sketch and the Chrysalis files and decides what happens to the fork. Step 4's "left-hand letter and symbol keys of the base layer" matches the four ticked base-layer lines, and "holding both palm keys for volume, and brightness" matches the ticked palm and media lines. The dual-use part of step 4 was not narrowed; see below.
+
+Security pass: nothing found. Only documentation changed.
+
+Compliance, `intent.md`'s Success list against the proof:
+
+| Success item | Proof |
+|---|---|
+| Every key on every layer checked once | not met, waived: the plan's 2026-10-05 addition records it as open at merge; the guide says "partly done" |
+| A week of normal work without a reason to go back | not met, waived: three days, recorded in the plan addition and the checklist |
+| Going back to Kaleidoscope tried once and works | not met, waived: Etienne chose not to try it and not to make it part of #13; the guide says "not tried yet" |
+| The firmware builds on my machine from this repository | met: `qmk compile` above |
+
+Round 13's step 6 nit holds. Its step 4 nit holds for the base layer and the palm keys, but not for the dual-use keys. Spec criteria 1–3 and 12 hold, as the runs above prove. The checklist has 16 lines ticked and 35 open. No test was added, weakened, skipped or deleted in these commits. The branch is 17 commits ahead of its `origin` branch.
+
+- [ ] Nit: Still open from round 13. Step 4 still says "the dual-use taps, holds and same-hand rolls" were checked. The checklist ticks the tap and hold of the top-row `p` key only, plus the typing checks that roll over the top-row keys. "The numbers and navigation mod-taps tap their digit or symbol and hold their modifier" and "Hold two modifiers together" are open. After `finish`, this line is the only record. For example: "the top-row dual-use keys and same-hand rolls" — `docs/qmk-migration.md:299` →
