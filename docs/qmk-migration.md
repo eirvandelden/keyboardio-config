@@ -174,7 +174,7 @@ The Qukeys values in `Model100.ino`, kept for reference:
 | `setMaxIntervalForTapRepeat` | 300 | no, QMK default `QUICK_TAP_TERM` (200) |
 | `setKeyscanInterval(2)` | 2 ms | the port already sets the scanner chips' interval to 2 in `matrix.c` (`matrix_init_custom()`) |
 
-`"debounce": 0` in the port's `keyboard.json` is a separate QMK setting and stays. If doubled letters appear, try `#define DEBOUNCE 5` with `DEBOUNCE_TYPE = sym_eager_pk` in `rules.mk`, and record the doubled letters as a finding in `docs/changes/8-move-the-model-100-to-qmk-firmware/keyboard-checklist.md`.
+`"debounce": 0` in the port's `keyboard.json` is a separate QMK setting and stays. If doubled letters appear, try `#define DEBOUNCE 5` with `DEBOUNCE_TYPE = sym_eager_pk` in `rules.mk`, and open an issue for the doubled letters.
 
 ## Lights
 
@@ -296,6 +296,6 @@ Autocorrect keeps a list of recent keys and compares it with a list of typos bui
 1. Step 1: keep a way back.
 2. Steps 2–4: tools, the author's branch, flash the default keymap, and type on it.
 3. Step 5: the userspace files, keymap and timing settings are in this repository and compile (done 2026-10-01), were flashed on 2026-10-02, and were kept on 2026-10-05. Flash with `qmk flash -kb keyboardio/model100 -km eirvandelden`.
-4. Work through `docs/changes/8-move-the-model-100-to-qmk-firmware/keyboard-checklist.md` and compare against the Kaleidoscope feel.
+4. Check every key and the dual-use timing on the keyboard against the Kaleidoscope feel (done 2026-10-02 to 2026-10-05, in pull request #12).
 5. Per-layer colours, then anything from the opt-in list.
 6. When the pull request merges, move `user.qmk_home` to upstream QMK and retire the `Model100/` sketch and the Kaleidoscope fork.
