@@ -308,3 +308,40 @@ Round 10's two Important findings asked for a dated plan addition, and `plan.md:
 - [x] Important: The plan says trying the way back "becomes a prerequisite of the issue that removes Kaleidoscope", but issue #13 does not say so. It asks to remove the Chrysalis layout and the guide's way-back parts, and to decide whether to keep the `.bin`, with no step that tries it first. The plan and the checklist are the only records of the prerequisite, and `finish` runs `git rm -r docs/changes/<slug>`, so both leave before the merge. The guide, which stays, says the opposite at its last step: retire the `Model100/` sketch and the fork "when the pull request merges", where "the pull request" means qmk/qmk_firmware#26397 everywhere else in the guide. Put the prerequisite in the guide's last step. Etienne could also add this line to #13 (draft, not posted): "Before removing anything, try the way back once: flash the kept `.bin`, import the Chrysalis layout, then flash QMK again. #8 did not try it, and after this removal the `.bin` is the whole way back." — `docs/qmk-migration.md:301` fixed (docs: the way back stays untried, and the merge is not done yet): no prerequisite, by Etienne's choice; #13 stays as written
 - [x] Nit: The plan addition says "merged 2026-10-07", but pull request #12 is open and not merged on 2026-10-08. Say "chose on 2026-10-07 to merge", or leave out the merge date until it happens — `docs/changes/8-move-the-model-100-to-qmk-firmware/plan.md:93` fixed (docs: the way back stays untried, and the merge is not done yet)
 - [x] Nit: The guide points at `docs/changes/8-move-the-model-100-to-qmk-firmware/keyboard-checklist.md` twice: for recording doubled letters, and in order-of-work step 4. `finish` removes that folder, so both links point at a missing file once the branch merges. Name an issue instead, or drop the path — `docs/qmk-migration.md:177` fixed (Stop pointing the guide at the change folder, which finish removes)
+
+## Round 12 — 2026-10-08T08:33Z — a530239
+
+Scope: `origin/main...HEAD` (75 commits, 25 files), with focus on the 3 commits since round 11 (`03ca041..a530239`): the plan addition's merge date and way-back line, the guide's two links into the change folder replaced, and round 11 closed. No code changed since round 9. The working tree is clean. There is no `REVIEW.md` or `REVIEW.local.md`, so the default passes ran: Bugs, Security, Compliance.
+
+Run on this machine:
+
+- Minitest (the plan's command): 53 runs, 140 assertions, 0 failures.
+- `rubocop bin lib test`: 9 files, no offenses.
+- `clang-format --dry-run --Werror` on `keymap.c` and `config.h`: clean.
+- `qmk compile -kb keyboardio/model100 -km eirvandelden` (QMK at `2c745388201b633ba04036b17157669632d1740a`, the keg-only compilers on `PATH`): exits 0. The working tree stays clean after it.
+- `bin/keymap-parity`: exits 0 and prints nothing.
+- `git diff --exit-code origin/main -- Model01 Model100 Chrysalis_Keyboardio-Model-100_layout.json`: exits 0.
+- The plan's Caps Word and Autocorrect `grep`: exits 1.
+- `shasum -a 256 ~/Documents/keyboardio/model100-kaleidoscope-1ee038c.bin` matches the SHA-256 in the guide.
+- `git grep -n docs/changes -- ':!docs/changes'`: no match, so nothing outside the change folder points into it.
+- `gh pr view 12`: open, not merged.
+
+Bugs pass: nothing found in the code, which is the same as in round 9. The plan addition now says "chosen to merge on 2026-10-07", and it records that Etienne chose not to try the way back and not to make it part of #13. The guide no longer links into the change folder. One of the two replacement lines claims more than the checklist shows, and makes a later step ambiguous; see below.
+
+Security pass: nothing found. Only documentation changed.
+
+Compliance, `intent.md`'s Success list against the proof:
+
+| Success item | Proof |
+|---|---|
+| Every key on every layer checked once | not met, waived: the plan's 2026-10-05 addition records it as open at merge; the guide now says it is done, see below |
+| A week of normal work without a reason to go back | not met, waived: three days, recorded in the plan addition and the checklist |
+| Going back to Kaleidoscope tried once and works | not met, waived: Etienne chose not to try it and not to make it part of #13 (plan addition) |
+| The firmware builds on my machine from this repository | met: `qmk compile` above |
+
+Round 11's two nits hold: the plan no longer gives a merge date, and the guide has no path into the change folder. Its Important finding is closed by Etienne's choice. Spec criteria 1–3 and 12 hold, as the runs above prove. The checklist has 16 lines ticked and 35 open. No test was added, weakened, skipped or deleted in these commits. The branch is 11 commits ahead of its `origin` branch.
+
+- [ ] Important: The new order-of-work step 4 says every key and the dual-use timing were checked "(done 2026-10-02 to 2026-10-05, in pull request #12)". They were not. In `keyboard-checklist.md`, "Every key, every layer" has 5 of 28 lines ticked and "Dual-use key taps and holds" has 2 of 4. The plan's 2026-10-05 addition lists the every-key pass as open at merge. `finish` removes the checklist and the plan, so after the merge this line is the only record, and it says the opposite. Say what was checked and that the rest stays open, for example "partly done 2026-10-02 to 2026-10-05: the left-hand base layer, palm, media, light and some dual-use checks; the other keys were not each checked" — `docs/qmk-migration.md:299` →
+- [ ] Nit: Step 6 says "When the pull request merges, move `user.qmk_home` to upstream QMK". Step 4 now names pull request #12 just above it, so "the pull request" reads as #12. Upstream QMK has no Model 100 until qmk/qmk_firmware#26397 merges, so moving `user.qmk_home` when #12 merges breaks the build. Retiring the `Model100/` sketch is now #13, which does not wait for the QMK pull request. Name qmk/qmk_firmware#26397 in step 6, and point the retirement at #13 — `docs/qmk-migration.md:301` →
+- [ ] Nit: The guide's "Going back" paragraph reads as a tested procedure, and nothing that survives the merge says it was never tried. `de4794e` ("the way back stays untried") changed only `plan.md`, which `finish` removes. A short "(not tried yet)" keeps that fact after the merge, so whoever uses it after #13 knows it is the first try. This does not ask to try it — `docs/qmk-migration.md:42` →
+- [ ] Nit: The status line says "updated 2026-10-07", but `d2cc55f` changed the guide on 2026-10-08 — `docs/qmk-migration.md:5` →
