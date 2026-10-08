@@ -296,6 +296,6 @@ Autocorrect keeps a list of recent keys and compares it with a list of typos bui
 1. Step 1: keep a way back.
 2. Steps 2–4: tools, the author's branch, flash the default keymap, and type on it.
 3. Step 5: the userspace files, keymap and timing settings are in this repository and compile (done 2026-10-01), were flashed on 2026-10-02, and were kept on 2026-10-05. Flash with `qmk flash -kb keyboardio/model100 -km eirvandelden`.
-4. Check every key and the dual-use timing on the keyboard against the Kaleidoscope feel. Partly done between 2026-10-02 and 2026-10-05 (pull request #12): the left-hand base layer, the dual-use taps, holds and same-hand rolls, the palm keys, volume and brightness. QMK was kept before every key was checked.
+4. Check every key and the dual-use timing on the keyboard against the Kaleidoscope feel. Partly done between 2026-10-02 and 2026-10-05 (pull request #12): the left-hand letter and symbol keys of the base layer, the dual-use taps, holds and same-hand rolls, holding both palm keys for volume, and brightness. QMK was kept before every key was checked.
 5. Per-layer colours, then anything from the opt-in list.
-6. When qmk/qmk_firmware#26397 merges, move `user.qmk_home` to upstream QMK. Removing the `Model100/` sketch, the Chrysalis files and the Kaleidoscope fork is #13, which does not wait for that.
+6. When qmk/qmk_firmware#26397 merges, move `user.qmk_home` to upstream QMK. Removing the `Model100/` sketch and the Chrysalis files, and deciding what happens to the Kaleidoscope fork, is #13, which does not wait for that.
