@@ -272,3 +272,39 @@ Spec criteria 1–3 and 12 hold, as the runs above prove. The checklist has 16 l
 - [x] Important: Two more Success items are not met, and only the checklist says so. The week of normal work ended after three days, and the every-key pass (criterion 4) has 5 of 28 lines ticked. The plan's risk line still says the pull request "merges only after the week passes", and Proof 4 and 11 point at open boxes. The on-keyboard proofs of two later plan additions are also open: the light cycle from start-up (the findings call it fixed, but its box is open) and the round 7 slow-typing fade check. Those changes have only compile proof so far. Finish the open checks, or add a dated plan addition that records the 2026-10-05 decision and the criteria it waives — `docs/changes/8-move-the-model-100-to-qmk-firmware/plan.md:129` → fixed (docs: record merging after three days, and what was left open)
 - [x] Nit: The guide's status line still says "updated 2026-10-01" and "Nothing has been flashed yet". The keymap was flashed on 2026-10-02 and kept on 2026-10-05. The plan's doc step asks the guide to say what has been built and flashed. Step 3 of "Proposed order of work" also stops at "compile" — `docs/qmk-migration.md:5` → fixed (Say in the guide that the keymap is flashed and kept)
 - [x] Nit: The branch still adds `cspell.yml` and `project-dictionary.txt`, but cspell left the toolchain on 2026-10-07 and nothing runs it. The plan's step 10 and its `project-dictionary.txt` line also still name cspell. Remove both files before the merge, with a plan line for it. The `cspell:words` comments in `plan.md` and this file leave with the change folder — `cspell.yml:1` → fixed (Remove the cspell config, which nothing runs any more)
+
+## Round 11 — 2026-10-08T08:29Z — 7965d5b
+
+Scope: `origin/main...HEAD` (71 commits, 25 files), with focus on the 4 commits since round 10 (`890561c..7965d5b`): round 10 closed, the dated plan addition for keeping QMK after three days, the guide's status lines, and `cspell.yml` and `project-dictionary.txt` removed. No code changed since round 9 (`git diff 873a937..HEAD -- keyboards lib bin test qmk.json .clang-format .gitignore` is empty). The working tree is clean. There is no `REVIEW.md` or `REVIEW.local.md`, so the default passes ran: Bugs, Security, Compliance.
+
+Run on this machine:
+
+- Minitest (the plan's command): 53 runs, 140 assertions, 0 failures.
+- `rubocop bin lib test`: 9 files, no offenses.
+- `clang-format --dry-run --Werror` on `keymap.c` and `config.h`: clean.
+- `qmk compile -kb keyboardio/model100 -km eirvandelden` (QMK at `2c745388201b633ba04036b17157669632d1740a`, the keg-only compilers on `PATH`): exits 0. The working tree stays clean after it.
+- `bin/keymap-parity`: exits 0 and prints nothing.
+- `git diff --exit-code origin/main -- Model01 Model100 Chrysalis_Keyboardio-Model-100_layout.json`: exits 0.
+- The plan's Caps Word and Autocorrect `grep`: exits 1.
+- `shasum -a 256 ~/Documents/keyboardio/model100-kaleidoscope-1ee038c.bin` matches the SHA-256 in the guide.
+- `git grep -i cspell` outside this file: only `plan.md`, in the 2026-09-30 facts, the file list and step 10, which the new addition says no longer apply.
+- `gh pr view 12`: open, not merged. `gh issue view 13` ("Remove Kaleidoscope from this repository", opened 2026-10-08) was read for the way-back prerequisite.
+
+Bugs pass: nothing found. The code is the same as in round 9. The guide's new status line and order-of-work step 3 match the checklist dates (flashed 2026-10-02, kept 2026-10-05).
+
+Security pass: nothing found. These commits change only documentation and remove two config files.
+
+Compliance, `intent.md`'s Success list against the proof:
+
+| Success item | Proof |
+|---|---|
+| Every key on every layer checked once | not met, waived: the plan's 2026-10-05 addition records it as open at merge |
+| A week of normal work without a reason to go back | not met, waived: three days, recorded in the plan addition and the checklist |
+| Going back to Kaleidoscope tried once and works | not met, waived: deferred to the Kaleidoscope removal issue by the plan addition; that issue does not carry it, see below |
+| The firmware builds on my machine from this repository | met: `qmk compile` above |
+
+Round 10's two Important findings asked for a dated plan addition, and `plan.md:93` now holds one. Round 10's nits hold: the guide's status line is current, and `cspell.yml` and `project-dictionary.txt` are gone. Spec criteria 1–3 and 12 hold, as the runs above prove. The checklist has 16 lines ticked and 35 open. No test was added, weakened, skipped or deleted in these commits. The branch is 7 commits ahead of its `origin` branch.
+
+- [ ] Important: The plan says trying the way back "becomes a prerequisite of the issue that removes Kaleidoscope", but issue #13 does not say so. It asks to remove the Chrysalis layout and the guide's way-back parts, and to decide whether to keep the `.bin`, with no step that tries it first. The plan and the checklist are the only records of the prerequisite, and `finish` runs `git rm -r docs/changes/<slug>`, so both leave before the merge. The guide, which stays, says the opposite at its last step: retire the `Model100/` sketch and the fork "when the pull request merges", where "the pull request" means qmk/qmk_firmware#26397 everywhere else in the guide. Put the prerequisite in the guide's last step. Etienne could also add this line to #13 (draft, not posted): "Before removing anything, try the way back once: flash the kept `.bin`, import the Chrysalis layout, then flash QMK again. #8 did not try it, and after this removal the `.bin` is the whole way back." — `docs/qmk-migration.md:301`
+- [ ] Nit: The plan addition says "merged 2026-10-07", but pull request #12 is open and not merged on 2026-10-08. Say "chose on 2026-10-07 to merge", or leave out the merge date until it happens — `docs/changes/8-move-the-model-100-to-qmk-firmware/plan.md:93`
+- [ ] Nit: The guide points at `docs/changes/8-move-the-model-100-to-qmk-firmware/keyboard-checklist.md` twice: for recording doubled letters, and in order-of-work step 4. `finish` removes that folder, so both links point at a missing file once the branch merges. Name an issue instead, or drop the path — `docs/qmk-migration.md:177`
