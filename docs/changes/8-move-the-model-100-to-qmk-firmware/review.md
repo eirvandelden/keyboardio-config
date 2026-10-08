@@ -345,3 +345,37 @@ Round 11's two nits hold: the plan no longer gives a merge date, and the guide h
 - [x] Nit: Step 6 says "When the pull request merges, move `user.qmk_home` to upstream QMK". Step 4 now names pull request #12 just above it, so "the pull request" reads as #12. Upstream QMK has no Model 100 until qmk/qmk_firmware#26397 merges, so moving `user.qmk_home` when #12 merges breaks the build. Retiring the `Model100/` sketch is now #13, which does not wait for the QMK pull request. Name qmk/qmk_firmware#26397 in step 6, and point the retirement at #13 — `docs/qmk-migration.md:301` → fixed (Correct the guide on what was checked, the way back, and what waits for upstream QMK)
 - [x] Nit: The guide's "Going back" paragraph reads as a tested procedure, and nothing that survives the merge says it was never tried. `de4794e` ("the way back stays untried") changed only `plan.md`, which `finish` removes. A short "(not tried yet)" keeps that fact after the merge, so whoever uses it after #13 knows it is the first try. This does not ask to try it — `docs/qmk-migration.md:42` → fixed (Correct the guide on what was checked, the way back, and what waits for upstream QMK)
 - [x] Nit: The status line says "updated 2026-10-07", but `d2cc55f` changed the guide on 2026-10-08 — `docs/qmk-migration.md:5` → fixed (Correct the guide on what was checked, the way back, and what waits for upstream QMK)
+
+## Round 13 — 2026-10-08T08:35Z — b9126af
+
+Scope: `origin/main...HEAD` (78 commits, 25 files), with focus on the 2 commits since round 12 (`e4ab9f6..b9126af`): the guide's status date, the way back marked "not tried yet", order-of-work steps 4 and 6 rewritten, and round 12 closed. No code changed since round 9 (`git diff 873a937..HEAD -- keyboards lib bin test qmk.json .clang-format .gitignore` is empty). The working tree is clean. There is no `REVIEW.md` or `REVIEW.local.md`, so the default passes ran: Bugs, Security, Compliance.
+
+Run on this machine:
+
+- Minitest (the plan's command): 53 runs, 140 assertions, 0 failures.
+- `rubocop bin lib test`: 9 files, no offenses.
+- `clang-format --dry-run --Werror` on `keymap.c` and `config.h`: clean.
+- `qmk compile -kb keyboardio/model100 -km eirvandelden` (QMK at `2c745388201b633ba04036b17157669632d1740a`, the keg-only compilers on `PATH`): exits 0. The working tree stays clean after it.
+- `bin/keymap-parity`: exits 0 and prints nothing.
+- `git diff --exit-code origin/main -- Model01 Model100 Chrysalis_Keyboardio-Model-100_layout.json`: exits 0.
+- The plan's Caps Word and Autocorrect `grep`: exits 1.
+- `shasum -a 256 ~/Documents/keyboardio/model100-kaleidoscope-1ee038c.bin` matches the SHA-256 in the guide.
+- `gh pr view 12`: open, not merged. `gh issue view 13` was read for step 6.
+
+Bugs pass: nothing found in the code, which is the same as in round 9. In the guide, the way back now says "not tried yet", the status date is 2026-10-08, and step 6 waits for qmk/qmk_firmware#26397, not #12. The other "the pull request" lines (`docs/qmk-migration.md:53`, `:67`, `:101`) sit under the section that names #26397, so they are not ambiguous. Step 4 now says "partly done", but its list of what was checked still names more than the checklist ticks; see below.
+
+Security pass: nothing found. Only documentation changed.
+
+Compliance, `intent.md`'s Success list against the proof:
+
+| Success item | Proof |
+|---|---|
+| Every key on every layer checked once | not met, waived: the plan's 2026-10-05 addition records it as open at merge; the guide now says "partly done" |
+| A week of normal work without a reason to go back | not met, waived: three days, recorded in the plan addition and the checklist |
+| Going back to Kaleidoscope tried once and works | not met, waived: Etienne chose not to try it and not to make it part of #13; the guide now says "not tried yet" |
+| The firmware builds on my machine from this repository | met: `qmk compile` above |
+
+Round 12's Important finding and three nits hold, apart from the list detail below. Spec criteria 1–3 and 12 hold, as the runs above prove. The checklist has 16 lines ticked and 35 open. No test was added, weakened, skipped or deleted in these commits. The branch is 14 commits ahead of its `origin` branch.
+
+- [ ] Nit: Step 4's list of what was checked names more than `keyboard-checklist.md` ticks. "The left-hand base layer": only the outer column and the three letter rows are ticked; the digits, the inner column (LED next, Spotlight, Ctrl+S) and the left thumb keys are open. Round 12 suggested that wording, and it was too broad. "The palm keys": 1 of 3 palm checks is ticked (both palms with volume up); the single-palm checks for the right arrow and `!` are open. "The dual-use taps, holds": only the top-row `p` key is ticked; the numbers and navigation mod-taps are open. After `finish` this line is the only record. For example: "the left-hand letter keys and outer column, the top-row dual-use keys and same-hand rolls, both palm keys together for volume, and brightness" — `docs/qmk-migration.md:299` →
+- [ ] Nit: Step 6 says removing "the Kaleidoscope fork is #13". Issue #13 does not remove the fork: it lists the fork under "Decide", archive it or leave it, because it holds keyboardio/Kaleidoscope#1539. Say "deciding what happens to the Kaleidoscope fork", or leave the fork out of the sentence — `docs/qmk-migration.md:301` →
