@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
+require "keymap_parity"
+
+root = File.expand_path("..", __dir__)
+keymap = File.join(root, "keyboards/keyboardio/model100/keymaps/eirvandelden/keymap.c")
+
+begin
+  chrysalis = KeymapParity::ChrysalisLayout.load(File.join(root, "Chrysalis_Keyboardio-Model-100_layout.json"))
+  report = KeymapParity::Comparison.new(chrysalis, KeymapParity::QmkKeymap.load(keymap)).report
+rescue KeymapParity::Error => error
+  abort "keymap-parity: #{error.message}"
+end
+
+puts report
+exit(report.empty? ? 0 : 1)
