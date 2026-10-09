@@ -27,3 +27,11 @@ Every test named in `plan.md`'s Proof exists: the ten host tests, the four `comp
 - [ ] Nit: `is_rolled()` and `set_rolled()` index `rolled[key.row]` with no bounds check. `tap_hold_track_event()` sees every event, and QMK's virtual key locations (encoders 252/253, DIP switches 250/251) would read and write far past the array if one of those features is ever enabled. The Model100 keymap enables none today. — `keyboards/keyboardio/model100/keymaps/eirvandelden/tap_hold.c:42` →
 - [ ] Nit: `tap_hold_track_event()` reads the keycode again with `get_record_keycode(record, false)`, which depends on the layer cache that `pre_process_record_quantum()` has just updated. `pre_process_record_user()` already receives that `keycode`; passing it in removes the hidden ordering dependency. — `keyboards/keyboardio/model100/keymaps/eirvandelden/tap_hold.c:64` →
 - [ ] Nit: the test fixture uses `std::find` and `std::begin`/`std::end` without `<algorithm>` and `<iterator>`; it compiles only through transitive includes of the QMK test headers. — `test/tap_hold/test_tap_hold.cpp:43` →
+
+## Round 2 (Codex) — 2026-10-09 — d90b69a
+
+Reviewer: `codex review --base origin/main`, transcribed by the coordinator.
+
+Codex found no actionable defects in the changes. It ran `bin/keymap-parity`, which completed. It could not run `bin/tap-hold-test`: its sandbox refused to write into the QMK checkout's `.build/` folder outside the worktree. The coordinator ran `bin/tap-hold-test` outside the sandbox on the same commit: 10 tests passed.
+
+No findings.
