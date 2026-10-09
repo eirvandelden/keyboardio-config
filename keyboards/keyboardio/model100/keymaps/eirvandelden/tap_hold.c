@@ -33,8 +33,13 @@ static struct {
   bool is_down;
 } last_press;
 
+// Encoders and DIP switches send events from virtual rows past the matrix.
+static bool in_matrix(keypos_t key) {
+  return key.row < MATRIX_ROWS && key.col < MATRIX_COLS;
+}
+
 static bool is_rolled(keypos_t key) {
-  return rolled[key.row] & ((matrix_row_t)1 << key.col);
+  return in_matrix(key) && (rolled[key.row] & ((matrix_row_t)1 << key.col));
 }
 
 static void set_rolled(keypos_t key, bool value) {
@@ -60,6 +65,9 @@ static void track_press(keypos_t key, bool is_mod_tap) {
 
 void tap_hold_track_event(uint16_t keycode, keyrecord_t* record) {
   keypos_t key = record->event.key;
+  if (!in_matrix(key)) {
+    return;
+  }
   if (record->event.pressed) {
     track_press(key, IS_QK_MOD_TAP(keycode));
   } else if (KEYEQ(key, last_press.key)) {

@@ -7,6 +7,10 @@
 #include "test_fixture.hpp"
 #include "test_keymap_key.hpp"
 
+extern "C" {
+#include "tap_hold.h"
+}
+
 using testing::_;
 using testing::AnyNumber;
 using testing::Invoke;
@@ -336,4 +340,41 @@ TEST_F(TapHold, ModTapMidWordSettlesAsTap) {
 
   EXPECT_EQ(all_mods(), 0);
   EXPECT_EQ(typed, (std::vector<uint8_t>{KC_A, KC_I, KC_F}));
+}
+
+// Encoder turns and DIP switches arrive as key events at virtual locations
+// past the matrix (rows 250-253). The tracker ignores them, so one arriving
+// inside the `c` then `l` roll neither breaks the roll nor touches memory
+// outside its per-row table.
+TEST_F(TapHold, EventOutsideMatrixDoesNotBreakRoll) {
+  TestDriver driver;
+  auto key_c = KeymapKey(0, 0, 2, LGUI_T(DV_C));
+  auto key_l = KeymapKey(0, 1, 2, LCTL_T(DV_L));
+  auto key_a = KeymapKey(0, 0, 0, DV_A);
+  auto key_u = KeymapKey(0, 1, 0, DV_U);
+  set_keymap({key_c, key_l, key_a, key_u});
+  record_reports(driver);
+
+  idle_for(1000);
+  key_c.press();
+  run_one_scan_loop();
+  keyrecord_t encoder = {.event = MAKE_KEYEVENT(KEYLOC_ENCODER_CW, 0, true)};
+  tap_hold_track_event(KC_VOLU, &encoder);
+  encoder.event.pressed = false;
+  tap_hold_track_event(KC_VOLU, &encoder);
+  idle_for(20);
+  for (KeymapKey* key : {&key_l, &key_a, &key_u}) {
+    key->press();
+    run_one_scan_loop();
+    idle_for(20);
+  }
+  for (KeymapKey* key : {&key_a, &key_u, &key_c, &key_l}) {
+    key->release();
+    run_one_scan_loop();
+    idle_for(20);
+  }
+  idle_for(300);
+
+  EXPECT_EQ(all_mods(), 0);
+  EXPECT_EQ(typed, (std::vector<uint8_t>{KC_I, KC_P, KC_A, KC_F}));
 }
