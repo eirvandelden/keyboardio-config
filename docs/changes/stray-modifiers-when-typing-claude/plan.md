@@ -130,6 +130,17 @@ Test setup: host tests use QMK's `TestFixture`, `TestDriver` and `KeymapKey(laye
 ---
 Domain skills applied: None (QMK C firmware and a small Ruby tool; the Rails skills do not apply). Playbook test-first, lint and commit rules applied.
 
+## Build notes
+
+Where the build departed from the plan:
+
+- `tap_hold.c` includes `"quantum.h"` instead of `QMK_KEYBOARD_H`, which the host test build does not define.
+- `test/tap_hold/test_keymap.c` also defines the empty `chordal_hold_layout` table QMK links into every Chordal Hold build.
+- The tracker is `tap_hold_track_event(keyrecord_t*)` and reads the keycode itself.
+- `qmk compile` needs the Homebrew ARM compiler on `PATH` (`docs/qmk-migration.md`, step 2).
+- Step 8: the newest stable herdr release is v0.9.3, which does not contain herdrdev/herdr#5017. herdr stays at 0.9.3.
+- The seven left-side switches also make the `word?` Shift exception apply to `g` and `7`: `is_shift_mod_tap()` matched only `MOD_LSFT`, so the right-side Shift keys never had it.
+
 ## Critique
 
 ### Round 1 (codex exec -p terra)
