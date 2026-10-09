@@ -1,4 +1,4 @@
-#include QMK_KEYBOARD_H
+#include "quantum.h"
 
 // Rows 0-3 of the matrix are the left half, rows 4-7 the right half.
 char chordal_hold_handedness(keypos_t key) {

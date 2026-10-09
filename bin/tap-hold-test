@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Builds and runs the host tests for the keymap's tap-hold code against the
+# QMK checkout at `qmk config user.qmk_home`. Arguments go to the test binary,
+# for example: bin/tap-hold-test --gtest_filter='*Claude*'
+set -euo pipefail
+
+repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+keymap="$repo/keyboards/keyboardio/model100/keymaps/eirvandelden"
+qmk_home=$(qmk config -ro user.qmk_home | sed 's/^user.qmk_home=//')
+name=keyboardio_config_tap_hold
+test_path=".build/$name"
+
+# QMK builds a test folder only from inside its own tree, so stage ours there.
+rm -rf "${qmk_home:?}/$test_path"
+mkdir -p "$qmk_home/$test_path"
+cp "$repo"/test/tap_hold/* "$qmk_home/$test_path/"
+cp "$keymap/tap_hold.c" "$qmk_home/$test_path/"
+if [ -f "$keymap/tap_hold.h" ]; then
+  cp "$keymap/tap_hold.h" "$qmk_home/$test_path/"
+fi
+cp "$keymap/config.h" "$qmk_home/$test_path/keymap_config.h"
+
+make -r -R -C "$qmk_home" -f builddefs/build_test.mk \
+  TEST="$name" TEST_OUTPUT="$name" TEST_PATH="$test_path" FULL_TESTS="$name" \
+  VERBOSE=false COLOR=false SILENT=false
+
+"$qmk_home/.build/test/$name.elf" "$@"
