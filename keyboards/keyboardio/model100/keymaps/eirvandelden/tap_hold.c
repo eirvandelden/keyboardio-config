@@ -29,8 +29,8 @@ static matrix_row_t rolled[MATRIX_ROWS];
 
 static struct {
   keypos_t key;
-  bool     is_mod_tap;
-  bool     is_down;
+  bool is_mod_tap;
+  bool is_down;
 } last_press;
 
 static bool is_rolled(keypos_t key) {
@@ -39,7 +39,7 @@ static bool is_rolled(keypos_t key) {
 
 static void set_rolled(keypos_t key, bool value) {
   matrix_row_t bit = (matrix_row_t)1 << key.col;
-  rolled[key.row]  = value ? (rolled[key.row] | bit) : (rolled[key.row] & ~bit);
+  rolled[key.row] = value ? (rolled[key.row] | bit) : (rolled[key.row] & ~bit);
 }
 
 static bool continues_roll(keypos_t key, bool is_mod_tap) {
@@ -53,9 +53,9 @@ static void track_press(keypos_t key, bool is_mod_tap) {
   if (rolling) {
     set_rolled(last_press.key, true);
   }
-  last_press.key        = key;
+  last_press.key = key;
   last_press.is_mod_tap = is_mod_tap;
-  last_press.is_down    = true;
+  last_press.is_down = true;
 }
 
 void tap_hold_track_event(keyrecord_t* record) {
