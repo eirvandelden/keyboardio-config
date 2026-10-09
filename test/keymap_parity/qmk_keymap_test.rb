@@ -40,10 +40,11 @@ class QmkKeymapTest < Minitest::Test
     assert_equal [ :mod_tap, 12, :rgui ], keymap.key(0, 1, 3)
   end
 
+  # Layer, Kaleidoscope row and column of each dual-use key that sends a left-side modifier.
   LEFT_SIDE_DUAL_USE = {
-    0 => %w[LSFT_T(DV_G) LGUI_T(DV_C) LCTL_T(DV_L)],
-    1 => %w[LSFT_T(DV_7) LGUI_T(DV_8) LCTL_T(DV_0)],
-    2 => %w[LGUI_T(DV_EQL)]
+    [ 0, 1, 11 ] => "LSFT_T(DV_G)", [ 0, 1, 12 ] => "LGUI_T(DV_C)", [ 0, 1, 14 ] => "LCTL_T(DV_L)",
+    [ 1, 1, 11 ] => "LSFT_T(DV_7)", [ 1, 1, 12 ] => "LGUI_T(DV_8)", [ 1, 1, 14 ] => "LCTL_T(DV_0)",
+    [ 2, 1, 12 ] => "LGUI_T(DV_EQL)"
   }.freeze
 
   def real_keymap
@@ -60,11 +61,9 @@ class QmkKeymapTest < Minitest::Test
   def test_real_keymap_dual_use_keys_send_left_side_modifiers
     keymap = real_keymap
 
-    LEFT_SIDE_DUAL_USE.each do |layer, names|
-      names.each do |name|
-        expected = qmk_keymap({ [ 0, 0 ] => name }).key(0, 0, 0)
-        assert_includes mod_taps(keymap, layer), expected, "layer #{layer} #{name}"
-      end
+    LEFT_SIDE_DUAL_USE.each do |(layer, row, col), name|
+      expected = qmk_keymap({ [ 0, 0 ] => name }).key(0, 0, 0)
+      assert_equal expected, keymap.key(layer, row, col), "layer #{layer} r#{row}c#{col} #{name}"
     end
   end
 
