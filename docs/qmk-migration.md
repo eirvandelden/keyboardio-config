@@ -153,14 +153,16 @@ The keymap is `keyboards/keyboardio/model100/keymaps/eirvandelden/keymap.c`. It 
 The keymap uses QMK's default timing plus three features. This was a choice on 2026-09-30, instead of porting the Qukeys values. The timing lines in the keymap's `config.h` are:
 
 ```c
-#define PERMISSIVE_HOLD
+#define PERMISSIVE_HOLD_PER_KEY
 #define CHORDAL_HOLD
 #define FLOW_TAP_TERM 150
 ```
 
 At the pinned commit `TAPPING_TERM` is 200 ms and `QUICK_TAP_TERM` equals it. Permissive Hold makes a mod-tap a hold when another key is pressed and released inside it. QMK's documentation says Chordal Hold is meant to be used with Permissive Hold or Hold On Other Key Press, and without one of them it adds nothing for opposite-hand chords. Flow Tap at 150 ms (the value QMK's documentation suggests) keeps top-row modifiers from firing while typing. Flow Tap is not a copy of the Qukeys minimum prior interval: its default filter skips digits, grave and brackets, and it is off during some modifier chords and while a tap-hold is undecided.
 
-The Shift keys (`p` and `g` on the base layer, `4` and `7` on the numbers layer) are left out of Flow Tap by `get_flow_tap_term()` in `keymap.c`. With Flow Tap on them, typing `word?` at speed gave `ppp/`: the Shift key followed a letter within 150 ms, so Flow Tap settled it as `p`, and macOS key repeat typed more `p` while it was held. Shift right after a letter is ordinary typing, so the Shift keys decide by hold time and Permissive Hold, and Flow Tap keeps guarding Ctrl, Alt and Cmd.
+The tap-hold code lives in `tap_hold.c` in the keymap folder, not in `keymap.c`, so the host tests can compile it on its own. `PERMISSIVE_HOLD_PER_KEY` keeps Permissive Hold on for every key except mod-taps in a same-hand roll, as described below.
+
+The Shift keys (`p` and `g` on the base layer, `4` and `7` on the numbers layer) are left out of Flow Tap by `get_flow_tap_term()` in `tap_hold.c`. With Flow Tap on them, typing `word?` at speed gave `ppp/`: the Shift key followed a letter within 150 ms, so Flow Tap settled it as `p`, and macOS key repeat typed more `p` while it was held. Shift right after a letter is ordinary typing, so the Shift keys decide by hold time and Permissive Hold, and Flow Tap keeps guarding Ctrl, Alt and Cmd.
 
 The Qukeys values in `Model100.ino`, kept for reference:
 
@@ -169,7 +171,7 @@ The Qukeys values in `Model100.ino`, kept for reference:
 | `setHoldTimeout` | 250 | no, QMK default `TAPPING_TERM` (200) |
 | `setEnableOppositeHandsRule(true)` | on | `CHORDAL_HOLD` |
 | `setMinimumPriorInterval` | 150 | `FLOW_TAP_TERM 150`, except the Shift keys |
-| `setOverlapThreshold` | 60% | `PERMISSIVE_HOLD`, nearest, not identical |
+| `setOverlapThreshold` | 60% | `PERMISSIVE_HOLD_PER_KEY`, nearest, not identical |
 | `setMinimumHoldTime` | 100 | none |
 | `setMaxIntervalForTapRepeat` | 300 | no, QMK default `QUICK_TAP_TERM` (200) |
 | `setKeyscanInterval(2)` | 2 ms | the port already sets the scanner chips' interval to 2 in `matrix.c` (`matrix_init_custom()`) |
@@ -199,6 +201,22 @@ char chordal_hold_handedness(keypos_t key) {
 Matrix rows 0–3 are the left half and rows 4–7 the right half, the same split as Kaleidoscope columns 0–7 against 8–15, thumbs and palm keys included. Returning `'*'` for a key lets it chord with either hand. That is worth trying for the thumb and palm keys, so a left mod plus left-thumb `Enter` or `Tab` still counts as a hold. Kaleidoscope's version could not do this.
 
 After `TAPPING_TERM` (200 ms), Chordal Hold no longer stops a hold, so a slow same-hand chord is a hold.
+
+### Same-hand rolls
+
+Typing `claude` straight after a pause sent `a` and `u` as Ctrl+Cmd chords and dropped the `c` and the `l` (`7;13u17;13ude` in a herdr pane). `c` is `LGUI_T(DV_C)` and `l` is `LCTL_T(DV_L)`. After a pause Flow Tap does not apply, so `c` starts undecided, and `l` waits behind it. When the left-hand `a` is pressed and released inside both, Permissive Hold settles `c` as a hold without asking Chordal Hold about `c` and `l`, and Chordal Hold settles `l` as a hold because `a` is on the opposite hand. QMK documents this as intended: Chordal Hold allows several same-side modifiers within the tapping term. Mid-word, Flow Tap settles `c` as a tap, which is why the fault shows only after a pause.
+
+The fix is a roll rule in `tap_hold.c`. `tap_hold_track_event()`, called from `pre_process_record_user()`, notes a mod-tap pressed while another mod-tap on the same hand is still held. Both keys then lose Permissive Hold until their next press (`get_permissive_hold()`): each becomes a tap on release, or a hold once the tapping term runs out. Only mod-tap pairs count, so a held layer key plus a mod-tap plus an opposite-hand key still chords. Chordal Hold and Flow Tap stay as they were.
+
+The trade-off: a deliberate same-hand multi-modifier chord, such as `c` + `l` + left `a` for Ctrl+Cmd+A, needs both keys held past the tapping term before the other hand presses. Single-modifier chords (`c` + left `a`, `l` + left `a`) are unchanged. A slow roll from a plain key into a mod-tap with an opposite-hand key nested inside it can still make that mod-tap a hold.
+
+### Left-side modifiers
+
+Every dual-use Shift, Command and Control key sends the left-side variant: `LSFT_T(DV_G)`, `LGUI_T(DV_C)` and `LCTL_T(DV_L)` on the base layer, `LSFT_T(DV_7)`, `LGUI_T(DV_8)` and `LCTL_T(DV_0)` on the numbers layer, `LGUI_T(DV_EQL)` on the navigation layer. The Chrysalis layout keeps the right-side variants. `bin/keymap-parity` accepts that one difference: a Chrysalis right-side dual-use key matches a QMK mod-tap with the same tap key and the left-side variant of that modifier.
+
+### Host tests
+
+`bin/tap-hold-test` builds and runs the tests in `test/tap_hold/` with QMK's host test framework, against the checkout at `qmk config user.qmk_home`. It stages the test folder, `tap_hold.c`, `tap_hold.h` and the keymap's `config.h` under QMK's `.build/`, so the tests always run with the keymap's real timing settings. Pass `--gtest_filter='*Claude*'` to run a subset. The runner relies on QMK's internal `builddefs/build_test.mk`; after moving the pinned QMK commit, run it again. The host tests do not cover `keymap.c` itself: the flashed keyboard does, through `docs/changes/stray-modifiers-when-typing-claude/keyboard-checklist.md`.
 
 ## Worth opting into later
 
