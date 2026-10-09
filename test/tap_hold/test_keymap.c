@@ -8,6 +8,6 @@ const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM = {{0}};
 #include "tap_hold.h"
 
 bool pre_process_record_user(uint16_t keycode, keyrecord_t* record) {
-  tap_hold_track_event(record);
+  tap_hold_track_event(keycode, record);
   return true;
 }

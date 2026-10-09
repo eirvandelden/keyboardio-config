@@ -64,7 +64,7 @@ static void remember_press(keypos_t key) {
 }
 
 bool pre_process_record_user(uint16_t keycode, keyrecord_t* record) {
-  tap_hold_track_event(record);
+  tap_hold_track_event(keycode, record);
   if (record->event.pressed) {
     remember_press(record->event.key);
   }

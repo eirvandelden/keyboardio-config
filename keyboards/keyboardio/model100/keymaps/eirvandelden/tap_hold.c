@@ -58,10 +58,10 @@ static void track_press(keypos_t key, bool is_mod_tap) {
   last_press.is_down = true;
 }
 
-void tap_hold_track_event(keyrecord_t* record) {
+void tap_hold_track_event(uint16_t keycode, keyrecord_t* record) {
   keypos_t key = record->event.key;
   if (record->event.pressed) {
-    track_press(key, IS_QK_MOD_TAP(get_record_keycode(record, false)));
+    track_press(key, IS_QK_MOD_TAP(keycode));
   } else if (KEYEQ(key, last_press.key)) {
     last_press.is_down = false;
   }
