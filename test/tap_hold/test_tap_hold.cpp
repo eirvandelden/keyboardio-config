@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <iterator>
 #include <vector>
 
 #include "keyboard_report_util.hpp"
