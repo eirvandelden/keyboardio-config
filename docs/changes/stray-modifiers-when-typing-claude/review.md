@@ -48,8 +48,8 @@ Security: nothing found. The runner's `rm -rf` stays guarded by `${qmk_home:?}` 
 
 Compliance: every test named in `plan.md`'s Proof exists and passes. The build notes match the code (`quantum.h`, the `chordal_hold_layout` stub, `tap_hold_track_event(uint16_t, keyrecord_t*)` with the matrix guard, herdr at 0.9.3). No test was weakened, skipped or deleted. Round 1's Important finding is still open: no box in `keyboard-checklist.md` is ticked, so the on-keyboard half of the first five acceptance criteria still has no evidence.
 
-- [ ] Nit: the runner copies `tap_hold.h` only `if [ -f ... ]`, but `tap_hold.h` exists from step 1 and both `test_keymap.c` and `test_tap_hold.cpp` include it unconditionally, so the build fails without it anyway. Copy it like `tap_hold.c` and drop the branch. — `bin/tap-hold-test:18` →
-- [ ] Nit: `test/tap_hold/config.h` includes `keymap_config.h` before `test_common.h`; design decision 3 says `test_common.h` first, then the keymap's settings. The two headers share no macro today, so behaviour is the same, but the code and the plan disagree and the build notes do not record it. Swap the includes or add a build note. — `test/tap_hold/config.h:3` →
+- [x] Nit: the runner copies `tap_hold.h` only `if [ -f ... ]`, but `tap_hold.h` exists from step 1 and both `test_keymap.c` and `test_tap_hold.cpp` include it unconditionally, so the build fails without it anyway. Copy it like `tap_hold.c` and drop the branch. — `bin/tap-hold-test:18` → fixed in 2cd24be: `tap_hold.h` is copied with `tap_hold.c`.
+- [x] Nit: `test/tap_hold/config.h` includes `keymap_config.h` before `test_common.h`; design decision 3 says `test_common.h` first, then the keymap's settings. The two headers share no macro today, so behaviour is the same, but the code and the plan disagree and the build notes do not record it. Swap the includes or add a build note. — `test/tap_hold/config.h:3` → fixed in d15cc44: `test_common.h` comes first, then the keymap's settings.
 
 ## Round 4 (Codex) — 2026-10-09 — 45189ad
 
