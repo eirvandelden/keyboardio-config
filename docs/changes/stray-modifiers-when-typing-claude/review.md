@@ -73,3 +73,11 @@ Compliance: every test named in `plan.md`'s Proof exists and passes. No test was
 
 - [ ] Important: `d15cc44` breaks the lint check. The Google base style sorts includes inside a block, so `clang-format --dry-run --Werror test/tap_hold/config.h` fails with "code should be clang-formatted" and wants `keymap_config.h` first again. Plan step 6 and §7a need clang-format clean. A blank line between the includes does not help; a comment line between them does (checked in a scratch copy), for example `// The keymap's settings override QMK's test defaults.` — this keeps the plan's order and passes clang-format. — `test/tap_hold/config.h:3` →
 - [ ] Nit: `test_keymap.c` includes `tap_hold.h` after the `chordal_hold_layout` definition, in the middle of the file. Move it up next to `quantum.h`. — `test/tap_hold/test_keymap.c:8` →
+
+## Round 6 (Codex) — 2026-10-12 — 778d59c
+
+Reviewer: `codex review --base origin/main`, transcribed by the coordinator.
+
+Codex found no actionable defects in the changes. Its sandbox again refused writes to the QMK checkout, so it could not run `bin/tap-hold-test`; the coordinator's run on the same commit passed 11 tests.
+
+No findings.
