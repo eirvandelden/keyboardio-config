@@ -35,3 +35,18 @@ Reviewer: `codex review --base origin/main`, transcribed by the coordinator.
 Codex found no actionable defects in the changes. It ran `bin/keymap-parity`, which completed. It could not run `bin/tap-hold-test`: its sandbox refused to write into the QMK checkout's `.build/` folder outside the worktree. The coordinator ran `bin/tap-hold-test` outside the sandbox on the same commit: 10 tests passed.
 
 No findings.
+
+## Round 3 — 2026-10-09T21:37Z — 45189ad
+
+No `REVIEW.md` or `REVIEW.local.md` in the repository; the reviewer's default Bugs, Security and Compliance passes apply. Base: `origin/main`, fetched before this round; `git log origin/main..HEAD` shows 19 commits. No uncommitted changes. This round re-reads the whole diff and the five fix commits since round 1 (`bd3b054`, `12f3284`, `098e018`, `68ee0f7`, `e8fbd6a`).
+
+Current state: `bin/tap-hold-test` 11/11 green (the ten planned tests plus `EventOutsideMatrixDoesNotBreakRoll`); Ruby suite 59 runs, 0 failures; `bin/keymap-parity` exit 0; `qmk compile -kb keyboardio/model100 -km eirvandelden` builds with the documented compiler `PATH`; `clang-format --dry-run --Werror`, `shellcheck bin/tap-hold-test` and `rubocop bin lib test` are clean.
+
+Bugs: none found. The round 1 fixes hold. Tick events never reach `pre_process_record_user()` (`IS_NOEVENT` guard, `quantum/action.c:133`), so the fake `(0, 0)` key of `MAKE_TICK_EVENT` cannot clear `last_press.is_down`. `chordal_hold_handedness()` splits the real 8×8 matrix (`keyboards/keyboardio/model100/config.h:22`) at row 4, and the test's 4×10 matrix at row 2, as the comments say. `set_rolled()` has no bounds check of its own, but only receives keys that passed `in_matrix()`.
+
+Security: nothing found. The runner's `rm -rf` stays guarded by `${qmk_home:?}` and a fixed folder under QMK's `.build/`.
+
+Compliance: every test named in `plan.md`'s Proof exists and passes. The build notes match the code (`quantum.h`, the `chordal_hold_layout` stub, `tap_hold_track_event(uint16_t, keyrecord_t*)` with the matrix guard, herdr at 0.9.3). No test was weakened, skipped or deleted. Round 1's Important finding is still open: no box in `keyboard-checklist.md` is ticked, so the on-keyboard half of the first five acceptance criteria still has no evidence.
+
+- [ ] Nit: the runner copies `tap_hold.h` only `if [ -f ... ]`, but `tap_hold.h` exists from step 1 and both `test_keymap.c` and `test_tap_hold.cpp` include it unconditionally, so the build fails without it anyway. Copy it like `tap_hold.c` and drop the branch. — `bin/tap-hold-test:18` →
+- [ ] Nit: `test/tap_hold/config.h` includes `keymap_config.h` before `test_common.h`; design decision 3 says `test_common.h` first, then the keymap's settings. The two headers share no macro today, so behaviour is the same, but the code and the plan disagree and the build notes do not record it. Swap the includes or add a build note. — `test/tap_hold/config.h:3` →
