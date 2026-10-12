@@ -58,3 +58,18 @@ Reviewer: `codex review --base origin/main`, transcribed by the coordinator.
 Codex found no actionable defects in the changes. `bin/keymap-parity` passed. Its sandbox again refused writes to the QMK checkout, so it could not run `bin/tap-hold-test`; the coordinator's run on the same commit passed 11 tests.
 
 No findings.
+
+## Round 5 — 2026-10-12T15:09Z — 778d59c
+
+No `REVIEW.md` or `REVIEW.local.md` in the repository; the reviewer's default Bugs, Security and Compliance passes apply. Base: `origin/main`, fetched before this round; `git log origin/main..HEAD` shows 24 commits. No uncommitted changes. This round re-reads the whole diff and the two fix commits since round 3 (`2cd24be`, `d15cc44`).
+
+Current state: `bin/tap-hold-test` 11/11 green; Ruby suite 59 runs, 0 failures; `bin/keymap-parity` exit 0; `shellcheck bin/tap-hold-test` and `rubocop bin lib test` are clean. `clang-format --dry-run --Werror` now fails on `test/tap_hold/config.h` (finding below). `qmk compile` was not re-run: no keymap file changed since round 3.
+
+Bugs: none found. The two round 3 fixes do what they say: the runner copies `tap_hold.h` unconditionally, and `test_common.h` now loads before `keymap_config.h`. The two headers still share no macro, so the test results are the same.
+
+Security: nothing found. The runner's `rm -rf` stays guarded by `${qmk_home:?}` and a fixed folder under QMK's `.build/`.
+
+Compliance: every test named in `plan.md`'s Proof exists and passes. No test was weakened, skipped or deleted. Round 1's Important finding is still open: no box in `keyboard-checklist.md` is ticked, so the on-keyboard half of the first five acceptance criteria still has no evidence.
+
+- [ ] Important: `d15cc44` breaks the lint check. The Google base style sorts includes inside a block, so `clang-format --dry-run --Werror test/tap_hold/config.h` fails with "code should be clang-formatted" and wants `keymap_config.h` first again. Plan step 6 and §7a need clang-format clean. A blank line between the includes does not help; a comment line between them does (checked in a scratch copy), for example `// The keymap's settings override QMK's test defaults.` — this keeps the plan's order and passes clang-format. — `test/tap_hold/config.h:3` →
+- [ ] Nit: `test_keymap.c` includes `tap_hold.h` after the `chordal_hold_layout` definition, in the middle of the file. Move it up next to `quantum.h`. — `test/tap_hold/test_keymap.c:8` →
