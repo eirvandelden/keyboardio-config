@@ -103,3 +103,17 @@ Reviewer: `codex review --base origin/main`, transcribed by the coordinator.
 Codex found no actionable defects in the diff. The Ruby tests and `bin/keymap-parity` passed. Its sandbox again refused access to the QMK checkout's build folder, so it could not run `bin/tap-hold-test`; the coordinator's run on the same commit passed 11 tests.
 
 No findings.
+
+## Round 9 — 2026-10-12T15:30Z — 95f80e5
+
+No `REVIEW.md` or `REVIEW.local.md` in the repository; the reviewer's default Bugs, Security and Compliance passes apply. Base: `origin/main`, fetched before this round; `git log origin/main..HEAD` shows 33 commits. No uncommitted changes. This round re-reads the whole diff and the code commit since round 7 (`8e456cc`).
+
+Current state: `bin/tap-hold-test` 11/11 green; Ruby suite 59 runs, 0 failures; `bin/keymap-parity` exit 0; `clang-format --dry-run --Werror` on the keymap and `test/tap_hold/` files, `shellcheck bin/tap-hold-test` and `rubocop bin lib test` are clean. `qmk compile` was not re-run: no keymap file changed since round 3. `gh release list -R herdrdev/herdr` still shows v0.9.3 as the newest stable release; the 2026-10-12 build is a preview, which the intent excludes.
+
+Bugs: none found. `8e456cc` changes only prose in `docs/qmk-migration.md`. The roll tracker, `get_permissive_hold()`, the seven left-side mod-taps and the parity exception are unchanged since round 3.
+
+Security: nothing found. The runner's `rm -rf` stays guarded by `${qmk_home:?}` and a fixed folder under QMK's `.build/`.
+
+Compliance: every test named in `plan.md`'s Proof exists and passes. No test was weakened, skipped or deleted. The round 7 nit holds: no file outside the change folder links into `docs/changes/`, and the guide's hand checks match the acceptance criteria for `claude`, Cmd+A, Ctrl+A and the left-side modifiers. Round 1's Important finding is still open: no box in `keyboard-checklist.md` is ticked, so the on-keyboard half of the first five acceptance criteria still has no evidence.
+
+No new findings.
