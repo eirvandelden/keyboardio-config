@@ -216,7 +216,7 @@ Every dual-use Shift, Command and Control key sends the left-side variant: `LSFT
 
 ### Host tests
 
-`bin/tap-hold-test` builds and runs the tests in `test/tap_hold/` with QMK's host test framework, against the checkout at `qmk config user.qmk_home`. It stages the test folder, `tap_hold.c`, `tap_hold.h` and the keymap's `config.h` under QMK's `.build/`, so the tests always run with the keymap's real timing settings. Pass `--gtest_filter='*Claude*'` to run a subset. The runner relies on QMK's internal `builddefs/build_test.mk`; after moving the pinned QMK commit, run it again. The host tests do not cover `keymap.c` itself: the flashed keyboard does, through `docs/changes/stray-modifiers-when-typing-claude/keyboard-checklist.md`.
+`bin/tap-hold-test` builds and runs the tests in `test/tap_hold/` with QMK's host test framework, against the checkout at `qmk config user.qmk_home`. It stages the test folder, `tap_hold.c`, `tap_hold.h` and the keymap's `config.h` under QMK's `.build/`, so the tests always run with the keymap's real timing settings. Pass `--gtest_filter='*Claude*'` to run a subset. The runner relies on QMK's internal `builddefs/build_test.mk`; after moving the pinned QMK commit, run it again. The host tests do not cover `keymap.c` itself. After flashing, check it by hand: typing `claude` straight after opening a herdr pane gives `claude`; holding `c` or `l` and pressing `a` with the left hand gives Cmd+A or Ctrl+A; a key-event viewer reports left-side modifiers for the seven dual-use keys above.
 
 ## Worth opting into later
 
