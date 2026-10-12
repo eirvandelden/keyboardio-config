@@ -14,10 +14,7 @@ test_path=".build/$name"
 rm -rf "${qmk_home:?}/$test_path"
 mkdir -p "$qmk_home/$test_path"
 cp "$repo"/test/tap_hold/* "$qmk_home/$test_path/"
-cp "$keymap/tap_hold.c" "$qmk_home/$test_path/"
-if [ -f "$keymap/tap_hold.h" ]; then
-  cp "$keymap/tap_hold.h" "$qmk_home/$test_path/"
-fi
+cp "$keymap/tap_hold.c" "$keymap/tap_hold.h" "$qmk_home/$test_path/"
 cp "$keymap/config.h" "$qmk_home/$test_path/keymap_config.h"
 
 make -r -R -C "$qmk_home" -f builddefs/build_test.mk \
