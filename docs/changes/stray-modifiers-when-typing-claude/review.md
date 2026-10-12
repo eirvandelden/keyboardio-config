@@ -95,3 +95,11 @@ Security: nothing found. The runner's `rm -rf` stays guarded by `${qmk_home:?}` 
 Compliance: every test named in `plan.md`'s Proof exists and passes. No test was weakened, skipped or deleted. Round 1's Important finding is still open: no box in `keyboard-checklist.md` is ticked, so the on-keyboard half of the first five acceptance criteria still has no evidence.
 
 - [ ] Nit: `docs/qmk-migration.md` sends readers to `docs/changes/stray-modifiers-when-typing-claude/keyboard-checklist.md` for the on-keyboard checks of `keymap.c`. The `finish` skill runs `git rm -r docs/changes/<slug>` before the pull request opens, so this link breaks on merge. Describe the checks in `docs/qmk-migration.md` itself, or drop the path and say that the flashed keyboard covers `keymap.c`. — `docs/qmk-migration.md:219` →
+
+## Round 8 (Codex) — 2026-10-12 — 63cb95d
+
+Reviewer: `codex review --base origin/main`, transcribed by the coordinator.
+
+Codex found no actionable defects in the diff. The Ruby tests and `bin/keymap-parity` passed. Its sandbox again refused access to the QMK checkout's build folder, so it could not run `bin/tap-hold-test`; the coordinator's run on the same commit passed 11 tests.
+
+No findings.
