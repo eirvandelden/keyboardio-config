@@ -50,3 +50,11 @@ Compliance: every test named in `plan.md`'s Proof exists and passes. The build n
 
 - [ ] Nit: the runner copies `tap_hold.h` only `if [ -f ... ]`, but `tap_hold.h` exists from step 1 and both `test_keymap.c` and `test_tap_hold.cpp` include it unconditionally, so the build fails without it anyway. Copy it like `tap_hold.c` and drop the branch. — `bin/tap-hold-test:18` →
 - [ ] Nit: `test/tap_hold/config.h` includes `keymap_config.h` before `test_common.h`; design decision 3 says `test_common.h` first, then the keymap's settings. The two headers share no macro today, so behaviour is the same, but the code and the plan disagree and the build notes do not record it. Swap the includes or add a build note. — `test/tap_hold/config.h:3` →
+
+## Round 4 (Codex) — 2026-10-09 — 45189ad
+
+Reviewer: `codex review --base origin/main`, transcribed by the coordinator.
+
+Codex found no actionable defects in the changes. `bin/keymap-parity` passed. Its sandbox again refused writes to the QMK checkout, so it could not run `bin/tap-hold-test`; the coordinator's run on the same commit passed 11 tests.
+
+No findings.
