@@ -139,6 +139,7 @@ Where the build departed from the plan:
 - The tracker is `tap_hold_track_event(uint16_t keycode, keyrecord_t*)`. It takes the keycode `pre_process_record_user()` already has, and it ignores events from virtual locations past the matrix (encoders, DIP switches).
 - `qmk compile` needs the Homebrew ARM compiler on `PATH` (`docs/qmk-migration.md`, step 2).
 - Step 8: the newest stable herdr release is v0.9.3, which does not contain herdrdev/herdr#5017. herdr stays at 0.9.3.
+- Step 8, 2026-10-19: Homebrew now has herdr 0.9.5, installed outside this change. `gh api repos/herdrdev/herdr/compare/v0.9.5...a124eed` reports `behind` by 34 and ahead by 0, so 0.9.5 contains #5017. No `brew upgrade` was needed.
 
 ## Critique
 
