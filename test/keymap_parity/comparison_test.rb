@@ -35,6 +35,27 @@ class ComparisonTest < Minitest::Test
     assert_equal 1, differences(49_189, "LALT_T(DV_QUOT)").size
   end
 
+  # Chrysalis dual-use codes: 49_169 + (modifier index << 8) + HID code of the tap key; DV_C is HID 12.
+  RIGHT_GUI_TAP_C = 49_169 + (7 << 8) + 12
+  LEFT_GUI_TAP_C = 49_169 + (3 << 8) + 12
+
+  def test_right_side_dual_use_matches_left_side_mod_tap_with_same_tap_key
+    assert_empty differences(RIGHT_GUI_TAP_C, "LGUI_T(DV_C)")
+    assert_empty differences(RIGHT_GUI_TAP_C, "LGUI_T(DV_C)", chrysalis_layer: 1, qmk_layer: 1)
+  end
+
+  def test_left_side_dual_use_against_right_side_mod_tap_is_reported
+    assert_equal 1, differences(LEFT_GUI_TAP_C, "RGUI_T(DV_C)").size
+  end
+
+  def test_right_side_dual_use_against_left_side_mod_tap_with_other_tap_key_is_reported
+    assert_equal 1, differences(RIGHT_GUI_TAP_C, "LGUI_T(DV_L)").size
+  end
+
+  def test_right_side_dual_use_against_a_different_left_modifier_is_reported
+    assert_equal 1, differences(RIGHT_GUI_TAP_C, "LCTL_T(DV_C)").size
+  end
+
   def test_shift_to_layer_matches_mo_and_lock_to_layer_matches_tg
     assert_empty differences(17_451, "MO(NUMBERS)")
     assert_empty differences(17_409, "TG(NUMBERS)")

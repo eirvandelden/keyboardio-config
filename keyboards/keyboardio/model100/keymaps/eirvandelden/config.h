@@ -1,6 +1,6 @@
 #pragma once
 
-#define PERMISSIVE_HOLD
+#define PERMISSIVE_HOLD_PER_KEY
 #define CHORDAL_HOLD
 #define FLOW_TAP_TERM 150
 

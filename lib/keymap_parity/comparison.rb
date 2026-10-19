@@ -3,6 +3,7 @@ module KeymapParity
   class Comparison
     CHRYSALIS_LAYERS = 8
     UNUSED_LAYERS = [ 3, 5, 6, 7 ].freeze
+    LEFT_SIDE = { rctl: :lctl, rsft: :lsft, ralt: :lalt, rgui: :lgui }.freeze
     SPOTLIGHT = { layer: 0, position: [ 1, 6 ], chrysalis: [ :consumer, 0x2a2 ], qmk: [ :key, 44, [ :lgui ] ] }.freeze
 
     Difference = Struct.new(:where, :chrysalis, :qmk) do
@@ -43,9 +44,16 @@ module KeymapParity
     end
 
     def exception?(layer, position, expected, actual)
+      return true if left_side_variant?(expected, actual)
       return false unless layer.zero?
 
       transparent_for_nothing?(expected, actual) || spotlight?(position, expected, actual)
+    end
+
+    # The QMK keymap sends the left-side modifier where the Chrysalis layout has the right-side one.
+    def left_side_variant?(expected, actual)
+      expected.first == :mod_tap && actual.first == :mod_tap &&
+        expected[1] == actual[1] && LEFT_SIDE[expected[2]] == actual[2]
     end
 
     def transparent_for_nothing?(expected, actual)
